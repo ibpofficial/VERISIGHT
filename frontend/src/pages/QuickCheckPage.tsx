@@ -1,20 +1,18 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Zap, Upload, FileText, CheckCircle2, AlertTriangle, 
-  ShieldAlert, RefreshCw, Layers, Clock, Eye, Briefcase, 
-  ArrowRight, Download, Info, FileSpreadsheet
+  Zap, Upload, CheckCircle2, AlertTriangle, 
+  ShieldAlert, RefreshCw, Layers, Clock, Briefcase, 
+  Info
 } from 'lucide-react';
 import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
 import { FindingCard } from '../components/common/FindingCard';
 import { quickCheckApi } from '../services/api';
-import { usePreferences } from '../context/PreferencesContext';
 
 export const QuickCheckPage: React.FC = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { mode, t } = usePreferences();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);

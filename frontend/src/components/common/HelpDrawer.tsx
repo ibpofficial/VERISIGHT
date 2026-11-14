@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, ExternalLink, BookOpen, AlertCircle, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { X, BookOpen, HelpCircle, CheckCircle2 } from 'lucide-react';
 import { usePreferences } from '../../context/PreferencesContext';
 import { GlassButton } from '../glass/GlassButton';
 

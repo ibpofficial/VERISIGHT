@@ -298,7 +298,7 @@ def system_self_test(
     # 5. Cryptographic Hash Chain
     try:
         t0 = time.time()
-        from backend.app.core.audit_chain import verify_chain_integrity
+        from backend.app.core.audit_chain import calculate_record_hash
         audit_records = db.query(AuditLog).order_by(AuditLog.id.asc()).all()
         chain_valid = True
         head_hash = audit_records[-1].current_hash if audit_records else "GENESIS"
@@ -331,12 +331,12 @@ def system_self_test(
     # 7. MRZ Check Digits Math
     try:
         t0 = time.time()
-        from backend.app.engines.mrz.calculator import compute_icao_check_digit
-        cd = compute_icao_check_digit("L898902C3")
+        from backend.app.engines.mrz.check_digits import calculate_mrz_check_digit
+        cd = calculate_mrz_check_digit("L898902C3")
         results["mrz_engine"] = {
             "name": "ICAO Doc 9303 Check Digit Engine",
             "version": "ICAO-731-v1.0",
-            "status": "HEALTHY" if cd == 6 else "FAILED",
+            "status": "HEALTHY" if cd == "6" else "FAILED",
             "latency_ms": round((time.time() - t0) * 1000, 2),
             "detail": f"Modulo-10 cyclical [7, 3, 1] weight algorithm validated (L898902C3 -> {cd})."
         }

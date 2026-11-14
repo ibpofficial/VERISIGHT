@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { translations, Language } from '../i18n';
+import React, { createContext, useContext, useState } from 'react';
+import { translations, type Language } from '../i18n';
 
 export type UserMode = 'simple' | 'expert';
 

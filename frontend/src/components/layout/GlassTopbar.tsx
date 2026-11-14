@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { HelpCircle, Languages, Sliders, Check } from 'lucide-react';
+import { HelpCircle, Languages, Sliders } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { usePreferences } from '../../context/PreferencesContext';
 

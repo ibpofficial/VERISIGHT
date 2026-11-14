@@ -9,7 +9,6 @@ import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { CaseStepper } from '../components/common/CaseStepper';
 import { WhatNextPanel } from '../components/common/WhatNextPanel';
-import { GlossaryTooltip } from '../components/common/GlossaryTooltip';
 import { ForensicImageViewer } from '../components/forensics/ForensicImageViewer';
 import { screeningsApi, forensicsApi } from '../services/api';
 import type { Screening, ForensicFinding, BoundingBox } from '../types';

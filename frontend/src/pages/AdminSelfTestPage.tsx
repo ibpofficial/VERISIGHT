@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Activity, CheckCircle2, XCircle, RefreshCw, 
-  Cpu, Database, ShieldCheck, FileText, Layers, Clock, Zap
+  Cpu, Database, ShieldCheck, FileText, Layers, Zap
 } from 'lucide-react';
 import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';

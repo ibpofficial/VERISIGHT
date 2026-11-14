@@ -10,7 +10,6 @@ import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { CaseStepper } from '../components/common/CaseStepper';
 import { WhatNextPanel } from '../components/common/WhatNextPanel';
-import { GlossaryTooltip } from '../components/common/GlossaryTooltip';
 import { screeningsApi } from '../services/api';
 import type { Screening, MRZRecord, ExtractedField } from '../types';
 

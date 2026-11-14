@@ -139,8 +139,8 @@ export const NewScreeningPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!selectedFile) {
       setErrorMessage('Please provide an identity document image to screen.');
       return;
@@ -201,7 +201,7 @@ export const NewScreeningPage: React.FC = () => {
         actionText={selectedFile ? "Initiate Automated Pipeline" : "Choose File or Take Photo"}
         onAction={() => {
           if (selectedFile) {
-            handleUpload();
+            handleSubmit();
           } else if (fileInputRef.current) {
             fileInputRef.current.click();
           }

@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  BookOpen, Compass, Users, FileText, CheckCircle2, 
+  Compass, Users, FileText, CheckCircle2, 
   AlertTriangle, Camera, HelpCircle, ShieldAlert, Play, 
-  Search, ExternalLink, ArrowRight, ShieldCheck, Info
+  Search, ShieldCheck
 } from 'lucide-react';
 import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
 import { GLOSSARY } from '../components/common/GlossaryTooltip';
-import { usePreferences } from '../context/PreferencesContext';
 
 export const HelpCenterPage: React.FC = () => {
   const navigate = useNavigate();
-  const { mode, language, t } = usePreferences();
   const [activeTab, setActiveTab] = useState<'getting_started' | 'roles' | 'reports' | 'results' | 'tips' | 'faq' | 'limitations'>('getting_started');
   const [searchQuery, setSearchQuery] = useState('');
 

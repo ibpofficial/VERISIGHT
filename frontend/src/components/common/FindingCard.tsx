@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   ChevronDown, ChevronUp, AlertCircle, CheckCircle2, 
-  HelpCircle, ShieldAlert 
+  ShieldAlert 
 } from 'lucide-react';
 import { usePreferences } from '../../context/PreferencesContext';
 

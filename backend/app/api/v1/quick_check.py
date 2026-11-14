@@ -110,9 +110,10 @@ def escalate_to_full_case(
 
     doc = Document(
         screening_id=screening.id,
-        filename=filename,
-        file_path=file_path,
-        file_size=len(file_bytes),
+        original_filename=filename,
+        storage_path=file_path,
+        processed_path=file_path,
+        file_size_bytes=len(file_bytes),
         mime_type="application/octet-stream",
         sha256_hash=sha256
     )

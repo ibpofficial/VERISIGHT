@@ -54,7 +54,7 @@ def test_quick_check_analyzer_docx_tracked_changes():
 
 def test_quick_check_api_and_escalate():
     # Log in as screening officer
-    login_res = client.post("/api/v1/auth/login", data={"username": "officer@verisight.internal", "password": "Officer@12345"})
+    login_res = client.post("/api/v1/auth/login", json={"email": "officer@verisight.gov.in", "password": "Officer@12345"})
     assert login_res.status_code == 200
     token = login_res.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
