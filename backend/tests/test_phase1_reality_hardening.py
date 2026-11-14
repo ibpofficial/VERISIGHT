@@ -122,3 +122,4 @@ def test_field_validation_status_logic():
     assert compute_field_validation_status("date_of_birth", "14/05/1990", 0.95) == ValidationStatus.VALID
     assert compute_field_validation_status("document_number", "A2098411", 0.95) == ValidationStatus.VALID
     assert compute_field_validation_status("sex", "M", 0.95) == ValidationStatus.VALID
+

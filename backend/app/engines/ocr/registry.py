@@ -72,3 +72,4 @@ ocr_registry = OCRRegistry()
 
 def get_ocr_registry() -> OCRRegistry:
     return ocr_registry
+

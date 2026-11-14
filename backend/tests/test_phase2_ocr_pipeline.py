@@ -67,3 +67,4 @@ def test_perspective_rectification_on_trapezoid():
         warped, applied = correct_perspective_contour(img)
         assert warped is not None
         assert warped.shape[0] > 0
+

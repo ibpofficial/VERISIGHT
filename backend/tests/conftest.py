@@ -6,3 +6,4 @@ from backend.app.core.init_db import init_db
 def setup_test_database():
     """Initializes schema and seeds test users before running test session."""
     init_db()
+
