@@ -91,10 +91,10 @@ class BoundingBox(BaseModel):
 class ExtractedFieldResponse(BaseModel):
     id: str
     field_name: str
-    original_value: str
-    current_value: str
-    confidence: float
-    bounding_box: Dict[str, Any]
+    original_value: Optional[str] = None
+    current_value: Optional[str] = None
+    confidence: Optional[float] = None
+    bounding_box: Optional[Dict[str, Any]] = None
     validation_status: ValidationStatus
     is_corrected: bool
     corrected_by: Optional[str] = None

@@ -62,11 +62,11 @@ export interface BoundingBox {
 export interface ExtractedField {
   id: string;
   field_name: string;
-  original_value: string;
-  current_value: string;
-  confidence: number;
-  bounding_box: BoundingBox;
-  validation_status: 'VALID' | 'WARNING' | 'INVALID';
+  original_value: string | null;
+  current_value: string | null;
+  confidence: number | null;
+  bounding_box: BoundingBox | null;
+  validation_status: 'VALID' | 'WARNING' | 'INVALID' | 'INVALID_FORMAT' | 'LOW_CONFIDENCE' | 'MISSING' | 'UNREADABLE' | 'CORRECTED';
   is_corrected: boolean;
   notes?: string;
 }

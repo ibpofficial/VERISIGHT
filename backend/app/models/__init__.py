@@ -66,6 +66,11 @@ class ValidationStatus(str, enum.Enum):
     VALID = "VALID"
     WARNING = "WARNING"
     INVALID = "INVALID"
+    INVALID_FORMAT = "INVALID_FORMAT"
+    LOW_CONFIDENCE = "LOW_CONFIDENCE"
+    MISSING = "MISSING"
+    UNREADABLE = "UNREADABLE"
+    CORRECTED = "CORRECTED"
 
 
 def generate_uuid() -> str:
@@ -179,11 +184,11 @@ class ExtractedField(Base):
     id = Column(String(36), primary_key=True, default=generate_uuid)
     screening_id = Column(String(36), ForeignKey("screenings.id", ondelete="CASCADE"), nullable=False, index=True)
     field_name = Column(String(64), nullable=False)  # surname, document_number, dob, etc.
-    original_value = Column(Text, nullable=False)
-    current_value = Column(Text, nullable=False)
-    confidence = Column(Float, nullable=False)  # 0.0 to 1.0
-    bounding_box = Column(JSON, nullable=False)  # {"x": int, "y": int, "w": int, "h": int}
-    validation_status = Column(Enum(ValidationStatus), default=ValidationStatus.VALID, nullable=False)
+    original_value = Column(Text, nullable=True)
+    current_value = Column(Text, nullable=True)
+    confidence = Column(Float, nullable=True)  # 0.0 to 1.0, None if unread/missing
+    bounding_box = Column(JSON, nullable=True)  # {"x": int, "y": int, "w": int, "h": int} or None
+    validation_status = Column(Enum(ValidationStatus), default=ValidationStatus.MISSING, nullable=False)
     is_corrected = Column(Boolean, default=False, nullable=False)
     corrected_by = Column(String(36), ForeignKey("users.id"), nullable=True)
     corrected_at = Column(DateTime(timezone=True), nullable=True)

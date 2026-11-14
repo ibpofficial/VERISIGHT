@@ -65,7 +65,7 @@ export const ExtractionPage: React.FC = () => {
 
   const handleOpenCorrection = (field: ExtractedField) => {
     setEditingField(field);
-    setCorrectionValue(field.current_value);
+    setCorrectionValue(field.current_value || '');
     setCorrectionNotes('');
     setCorrectionError(null);
   };
@@ -311,7 +311,7 @@ export const ExtractionPage: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-[11px] text-slate-500">
-                          {(field.confidence * 100).toFixed(0)}% Conf
+                          {field.confidence != null ? `${(field.confidence * 100).toFixed(0)}% Conf` : 'Unread'}
                         </span>
                         <button
                           type="button"

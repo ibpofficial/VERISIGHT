@@ -281,10 +281,11 @@ def build_screening_pdf_report(
     f_rows = [["Field Identifier", "Extracted Value", "Confidence", "Status", "Reviewer Modified"]]
     for f in fields_data:
         val = f.get("current_value") or "—"
-        conf = f.get("confidence", 0.0)
+        conf = f.get("confidence")
+        conf_str = f"{conf*100:.0f}%" if conf is not None else "N/A"
         status = f.get("validation_status", "VALID")
         is_corr = "YES" if f.get("is_corrected") else "NO"
-        f_rows.append([f.get("field_name", "—"), val, f"{conf*100:.0f}%", str(status), is_corr])
+        f_rows.append([f.get("field_name", "—"), val, conf_str, str(status), is_corr])
 
     f_table = Table(f_rows, colWidths=[2.0 * inch, 2.3 * inch, 1.0 * inch, 1.1 * inch, 1.1 * inch])
     f_table.setStyle(TableStyle([

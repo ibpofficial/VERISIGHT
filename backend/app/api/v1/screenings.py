@@ -99,7 +99,7 @@ async def create_screening(
         file_size_bytes=len(contents),
         mime_type=mime_type,
         sha256_hash=file_sha256,
-        is_encrypted=True
+        is_encrypted=False
     )
     db.add(doc_record)
 
@@ -146,6 +146,12 @@ async def create_screening(
     viz_fields_dict = {}
     for f_dto in ocr_result.fields:
         viz_fields_dict[f_dto.field_name] = f_dto.value
+        val_status = ValidationStatus.MISSING
+        if f_dto.validation_status in ValidationStatus.__members__:
+            val_status = ValidationStatus[f_dto.validation_status]
+        elif f_dto.value:
+            val_status = ValidationStatus.VALID
+
         field_model = ExtractedField(
             screening_id=screening.id,
             field_name=f_dto.field_name,
@@ -153,7 +159,7 @@ async def create_screening(
             current_value=f_dto.value,
             confidence=f_dto.confidence,
             bounding_box=f_dto.bounding_box,
-            validation_status=ValidationStatus.VALID
+            validation_status=val_status
         )
         db.add(field_model)
 
@@ -196,7 +202,28 @@ async def create_screening(
             screening.risk_level = RiskLevel.CLEAR
             screening.risk_score = 12.0
     else:
-        # No MRZ detected (e.g. non-MRZ ID or poor crop)
+        # No MRZ detected or engine unavailable: store explicit unread MRZ record
+        mrz_record = MRZRecord(
+            screening_id=screening.id,
+            raw_mrz_text="",
+            format="NONE",
+            doc_type_code="",
+            issuing_country=screening.issuing_country_code or "",
+            surname="",
+            given_names="",
+            document_number="",
+            nationality="",
+            dob="",
+            sex="",
+            expiry_date="",
+            optional_data="",
+            doc_number_check=False,
+            dob_check=False,
+            expiry_check=False,
+            composite_check=False,
+            cross_check_matches={}
+        )
+        db.add(mrz_record)
         screening.risk_level = RiskLevel.REVIEW
         screening.risk_score = 50.0
 
@@ -329,6 +356,7 @@ def correct_extracted_field(
     old_val = field.current_value
     field.current_value = data.new_value
     field.is_corrected = True
+    field.validation_status = ValidationStatus.CORRECTED
     field.corrected_by = current_user.id
     field.corrected_at = datetime.datetime.now(datetime.timezone.utc)
     if data.notes:
