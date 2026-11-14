@@ -21,7 +21,7 @@ from backend.app.schemas import (
 from backend.app.api.deps import get_current_user, require_roles
 from backend.app.engines.quality import assess_image_quality
 from backend.app.engines.preprocessing import preprocess_document_image
-from backend.app.engines.ocr.tesseract_engine import TesseractOCREngine
+from backend.app.engines.ocr.registry import ocr_registry
 from backend.app.engines.mrz.parser import parse_mrz_td3, cross_check_mrz_with_viz
 
 router = APIRouter(prefix="/screenings", tags=["Document Screening"])
@@ -139,9 +139,8 @@ async def create_screening(
     doc_record.processed_path = processed_path
     screening.status = ScreeningStatus.ANALYZING
 
-    # 7. OCR Extraction
-    ocr_engine = TesseractOCREngine()
-    ocr_result = ocr_engine.extract(processed_path)
+    # 7. OCR Extraction via Unified Registry (PaddleOCR primary / Tesseract fallback)
+    ocr_result = ocr_registry.extract_with_fallback(processed_path)
 
     viz_fields_dict = {}
     for f_dto in ocr_result.fields:

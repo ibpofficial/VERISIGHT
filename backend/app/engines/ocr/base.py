@@ -20,6 +20,8 @@ class OCRResultDTO(BaseModel):
     execution_time_ms: int
     status: str = "SUCCESS"  # SUCCESS, ENGINE_UNAVAILABLE, EXTRACTION_FAILED
     error_message: Optional[str] = None
+    fallback_used: bool = False
+    primary_engine: Optional[str] = None
 
 
 class OCREngine(ABC):
