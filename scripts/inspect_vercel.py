@@ -12,3 +12,4 @@ for js in js_files:
     # Look for baseURL or API_BASE
     base_match = re.findall(r'baseURL:\s*["\']([^"\']+)["\']', content)
     print("Found baseURL:", base_match)
+
