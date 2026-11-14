@@ -194,3 +194,4 @@ export const translations: Translations = {
     hi: 'मामला सूची पर वापस जाएं (Back to Queue)',
   },
 };
+

@@ -331,12 +331,12 @@ def system_self_test(
     # 7. MRZ Check Digits Math
     try:
         t0 = time.time()
-        from backend.app.engines.mrz.check_digits import calculate_mrz_check_digit
-        cd = calculate_mrz_check_digit("L898902C3")
+        from backend.app.engines.mrz.check_digits import compute_check_digit
+        cd = compute_check_digit("L898902C3")
         results["mrz_engine"] = {
             "name": "ICAO Doc 9303 Check Digit Engine",
             "version": "ICAO-731-v1.0",
-            "status": "HEALTHY" if cd == "6" else "FAILED",
+            "status": "HEALTHY" if cd == 6 else "FAILED",
             "latency_ms": round((time.time() - t0) * 1000, 2),
             "detail": f"Modulo-10 cyclical [7, 3, 1] weight algorithm validated (L898902C3 -> {cd})."
         }

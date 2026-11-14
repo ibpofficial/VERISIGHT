@@ -99,6 +99,8 @@ def main():
     try:
         status, body = request("GET", "/api/v1/admin/self-test", headers=auth_headers)
         passed = status == 200 and body.get("status") == "SYSTEM_OPERATIONAL"
+        if not passed:
+            print("SELF-TEST DEBUG BODY:", status, body)
         record("Core Subsystems Diagnostics", passed, f"Latency: {body.get('total_latency_ms')}ms")
     except Exception as e:
         record("Core Subsystems Diagnostics", False, str(e))

@@ -509,3 +509,4 @@ class QuickCheckAnalyzer:
             "metadata_timeline": timeline,
             "visual_evidence_b64": None
         }
+

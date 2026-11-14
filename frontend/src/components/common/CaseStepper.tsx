@@ -203,3 +203,4 @@ export const CaseStepper: React.FC<CaseStepperProps> = ({
     </div>
   );
 };
+

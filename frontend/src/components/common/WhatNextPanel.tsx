@@ -78,3 +78,4 @@ export const WhatNextPanel: React.FC<WhatNextPanelProps> = ({
     </div>
   );
 };
+

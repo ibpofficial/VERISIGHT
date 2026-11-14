@@ -115,3 +115,4 @@ export const GlossaryTooltip: React.FC<GlossaryTooltipProps> = ({ term, children
     </span>
   );
 };
+

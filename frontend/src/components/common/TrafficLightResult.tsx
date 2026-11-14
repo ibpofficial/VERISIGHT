@@ -116,3 +116,4 @@ export const TrafficLightResult: React.FC<TrafficLightResultProps> = ({
     </div>
   );
 };
+
