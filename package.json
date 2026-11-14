@@ -1,9 +1,0 @@
-{
-  "name": "verisight",
-  "private": true,
-  "scripts": {
-    "dev": "npm --prefix frontend run dev",
-    "build": "node scripts/build_frontend.js",
-    "preview": "npm --prefix frontend run preview"
-  }
-}
