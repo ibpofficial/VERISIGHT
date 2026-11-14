@@ -96,7 +96,8 @@ def get_engine_status(
     # 1. Database Check
     db_healthy = True
     try:
-        db.execute("SELECT 1")
+        from sqlalchemy import text
+        db.execute(text("SELECT 1"))
     except Exception:
         db_healthy = False
 
