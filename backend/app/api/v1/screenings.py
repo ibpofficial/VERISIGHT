@@ -22,7 +22,7 @@ from backend.app.api.deps import get_current_user, require_roles
 from backend.app.engines.quality import assess_image_quality
 from backend.app.engines.preprocessing import preprocess_document_image
 from backend.app.engines.ocr.registry import ocr_registry
-from backend.app.engines.mrz.parser import parse_mrz_td3, cross_check_mrz_with_viz
+from backend.app.engines.mrz.parser import parse_mrz, parse_mrz_td3, cross_check_mrz_with_viz
 
 router = APIRouter(prefix="/screenings", tags=["Document Screening"])
 
@@ -162,11 +162,16 @@ async def create_screening(
         )
         db.add(field_model)
 
-    # 8. MRZ Verification
+    # 8. Real MRZ Verification (Supports TD1, TD2, TD3 with Position-Aware OCR Normalization)
     mrz_lines = ocr_result.raw_mrz_lines
     if len(mrz_lines) >= 2:
-        mrz_data = parse_mrz_td3(mrz_lines[0], mrz_lines[1])
-        cross_check = cross_check_mrz_with_viz(mrz_data, viz_fields_dict)
+        try:
+            mrz_data = parse_mrz(mrz_lines)
+        except Exception:
+            mrz_data = parse_mrz_td3(mrz_lines[0], mrz_lines[1])
+
+        viz_conf_dict = {f.field_name: f.confidence for f in ocr_result.fields}
+        cross_check = cross_check_mrz_with_viz(mrz_data, viz_fields_dict, viz_conf_dict)
 
         mrz_record = MRZRecord(
             screening_id=screening.id,
