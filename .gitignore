@@ -134,3 +134,33 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/venv/
+venv/
+ENV/
+env/
+
+# Databases & Runtime Data
+*.db
+*.sqlite
+*.sqlite3
+verisight.db
+test.db
+
+# Evidence and Uploaded Data
+data/uploads/
+data/processed/
+data/reports/
+backend/data/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

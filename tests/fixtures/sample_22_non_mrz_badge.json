@@ -1,0 +1,13 @@
+{
+  "filename": "sample_22_non_mrz_badge.jpg",
+  "condition": "NON_MRZ_BADGE",
+  "expected_extractable": true,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {
+    "document_type": "BADGE",
+    "surname": "CONNER",
+    "given_names": "SARAH",
+    "document_number": "EMP-8819"
+  }
+}

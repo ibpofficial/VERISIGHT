@@ -1,0 +1,8 @@
+{
+  "filename": "sample_29_text_only_article.jpg",
+  "condition": "TEXT_ONLY_PROSE",
+  "expected_extractable": false,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {}
+}

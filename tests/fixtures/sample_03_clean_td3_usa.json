@@ -1,0 +1,20 @@
+{
+  "filename": "sample_03_clean_td3_usa.jpg",
+  "condition": "CLEAN",
+  "expected_extractable": true,
+  "expected_risk": "CLEAR",
+  "notes": "Clean valid USA passport",
+  "ground_truth": {
+    "document_type": "PASSPORT_TD3",
+    "surname": "VANCE",
+    "given_names": "MARCUS",
+    "document_number": "C08429184",
+    "nationality": "USA",
+    "dob": "880615",
+    "expiry_date": "300615",
+    "sex": "M",
+    "mrz_line1": "P<USAVANCE<<MARCUS<<<<<<<<<<<<<<<<<<<<<<<<<<",
+    "mrz_line2": "C084291840USA8806150M3006151<<<<<<<<<<<<<<8<",
+    "is_valid_mrz": true
+  }
+}

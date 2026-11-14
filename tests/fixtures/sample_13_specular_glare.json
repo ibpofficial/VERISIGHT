@@ -1,0 +1,20 @@
+{
+  "filename": "sample_13_specular_glare.jpg",
+  "condition": "GLARE",
+  "expected_extractable": true,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {
+    "document_type": "PASSPORT_TD3",
+    "surname": "MEHTA",
+    "given_names": "ANANYA",
+    "document_number": "K4918204",
+    "nationality": "IND",
+    "dob": "950820",
+    "expiry_date": "350820",
+    "sex": "M",
+    "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+    "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+    "is_valid_mrz": true
+  }
+}

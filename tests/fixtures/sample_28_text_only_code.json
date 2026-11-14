@@ -1,0 +1,8 @@
+{
+  "filename": "sample_28_text_only_code.png",
+  "condition": "TEXT_ONLY_CODE",
+  "expected_extractable": false,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {}
+}

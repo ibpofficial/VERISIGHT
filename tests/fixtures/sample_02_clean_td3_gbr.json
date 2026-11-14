@@ -1,0 +1,20 @@
+{
+  "filename": "sample_02_clean_td3_gbr.jpg",
+  "condition": "CLEAN",
+  "expected_extractable": true,
+  "expected_risk": "CLEAR",
+  "notes": "Clean valid GBR passport",
+  "ground_truth": {
+    "document_type": "PASSPORT_TD3",
+    "surname": "BLACKWOOD",
+    "given_names": "ELEANOR",
+    "document_number": "948210384",
+    "nationality": "GBR",
+    "dob": "880615",
+    "expiry_date": "300615",
+    "sex": "M",
+    "mrz_line1": "P<GBRBLACKWOOD<<ELEANOR<<<<<<<<<<<<<<<<<<<<<",
+    "mrz_line2": "9482103849GBR8806150M3006151<<<<<<<<<<<<<<0<",
+    "is_valid_mrz": true
+  }
+}

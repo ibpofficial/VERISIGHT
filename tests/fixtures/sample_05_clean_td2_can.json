@@ -1,0 +1,13 @@
+{
+  "filename": "sample_05_clean_td2_can.jpg",
+  "condition": "CLEAN_TD2",
+  "expected_extractable": true,
+  "expected_risk": "CLEAR",
+  "notes": "",
+  "ground_truth": {
+    "document_type": "VISA_TD2",
+    "surname": "KOWALSKI",
+    "given_names": "JAN",
+    "document_number": "E91823741"
+  }
+}

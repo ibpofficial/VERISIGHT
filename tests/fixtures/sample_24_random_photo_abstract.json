@@ -1,0 +1,8 @@
+{
+  "filename": "sample_24_random_photo_abstract.jpg",
+  "condition": "NON_DOCUMENT",
+  "expected_extractable": false,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {}
+}

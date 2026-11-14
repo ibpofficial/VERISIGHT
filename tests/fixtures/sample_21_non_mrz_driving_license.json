@@ -1,0 +1,13 @@
+{
+  "filename": "sample_21_non_mrz_driving_license.jpg",
+  "condition": "NON_MRZ_DL",
+  "expected_extractable": true,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {
+    "document_type": "DOMESTIC_ID",
+    "surname": "PATEL",
+    "given_names": "RAJESH",
+    "document_number": "DL-1420110029"
+  }
+}

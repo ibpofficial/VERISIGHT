@@ -1,0 +1,13 @@
+{
+  "filename": "sample_04_clean_td1_fra.jpg",
+  "condition": "CLEAN_TD1",
+  "expected_extractable": true,
+  "expected_risk": "CLEAR",
+  "notes": "",
+  "ground_truth": {
+    "document_type": "ID_TD1",
+    "surname": "DUBOIS",
+    "given_names": "CLAIRE",
+    "document_number": "180948201"
+  }
+}

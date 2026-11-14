@@ -1,0 +1,20 @@
+{
+  "filename": "sample_01_clean_td3_ind.jpg",
+  "condition": "CLEAN",
+  "expected_extractable": true,
+  "expected_risk": "CLEAR",
+  "notes": "Clean valid IND passport",
+  "ground_truth": {
+    "document_type": "PASSPORT_TD3",
+    "surname": "VERMA",
+    "given_names": "VIKRAM",
+    "document_number": "Z9182374",
+    "nationality": "IND",
+    "dob": "880615",
+    "expiry_date": "300615",
+    "sex": "M",
+    "mrz_line1": "P<INDVERMA<<VIKRAM<<<<<<<<<<<<<<<<<<<<<<<<<<",
+    "mrz_line2": "Z91823749IND8806150M3006151<<<<<<<<<<<<<<4<<",
+    "is_valid_mrz": true
+  }
+}

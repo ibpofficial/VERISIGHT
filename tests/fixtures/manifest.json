@@ -1,0 +1,566 @@
+[
+  {
+    "filename": "sample_01_clean_td3_ind.jpg",
+    "condition": "CLEAN",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "Clean valid IND passport",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "VERMA",
+      "given_names": "VIKRAM",
+      "document_number": "Z9182374",
+      "nationality": "IND",
+      "dob": "880615",
+      "expiry_date": "300615",
+      "sex": "M",
+      "mrz_line1": "P<INDVERMA<<VIKRAM<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "Z91823749IND8806150M3006151<<<<<<<<<<<<<<4<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_02_clean_td3_gbr.jpg",
+    "condition": "CLEAN",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "Clean valid GBR passport",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "BLACKWOOD",
+      "given_names": "ELEANOR",
+      "document_number": "948210384",
+      "nationality": "GBR",
+      "dob": "880615",
+      "expiry_date": "300615",
+      "sex": "M",
+      "mrz_line1": "P<GBRBLACKWOOD<<ELEANOR<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "9482103849GBR8806150M3006151<<<<<<<<<<<<<<0<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_03_clean_td3_usa.jpg",
+    "condition": "CLEAN",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "Clean valid USA passport",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "VANCE",
+      "given_names": "MARCUS",
+      "document_number": "C08429184",
+      "nationality": "USA",
+      "dob": "880615",
+      "expiry_date": "300615",
+      "sex": "M",
+      "mrz_line1": "P<USAVANCE<<MARCUS<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "C084291840USA8806150M3006151<<<<<<<<<<<<<<8<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_04_clean_td1_fra.jpg",
+    "condition": "CLEAN_TD1",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "ID_TD1",
+      "surname": "DUBOIS",
+      "given_names": "CLAIRE",
+      "document_number": "180948201"
+    }
+  },
+  {
+    "filename": "sample_05_clean_td2_can.jpg",
+    "condition": "CLEAN_TD2",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "VISA_TD2",
+      "surname": "KOWALSKI",
+      "given_names": "JAN",
+      "document_number": "E91823741"
+    }
+  },
+  {
+    "filename": "sample_06_rotated_90deg.jpg",
+    "condition": "ROTATED_90",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_07_rotated_180deg.jpg",
+    "condition": "ROTATED_180",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_08_rotated_270deg.jpg",
+    "condition": "ROTATED_270",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_09_skewed_5deg.jpg",
+    "condition": "SKEWED_5DEG",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_10_skewed_15deg.jpg",
+    "condition": "SKEWED_15DEG",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_11_perspective_trapezoid.jpg",
+    "condition": "PERSPECTIVE",
+    "expected_extractable": true,
+    "expected_risk": "CLEAR",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_12_low_light.jpg",
+    "condition": "LOW_LIGHT",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_13_specular_glare.jpg",
+    "condition": "GLARE",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_14_gaussian_blur.jpg",
+    "condition": "BLURRED",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_15_motion_blur.jpg",
+    "condition": "MOTION_BLUR",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_16_cropped_missing_mrz.jpg",
+    "condition": "CROPPED_MRZ",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_17_corner_crop.jpg",
+    "condition": "CORNER_CROP",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_18_jpeg_recompressed_q20.jpg",
+    "condition": "HEAVY_JPEG",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_19_multicycle_resize.jpg",
+    "condition": "MULTICYCLE_RESIZE",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_20_desktop_screenshot.png",
+    "condition": "SCREENSHOT",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_21_non_mrz_driving_license.jpg",
+    "condition": "NON_MRZ_DL",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "DOMESTIC_ID",
+      "surname": "PATEL",
+      "given_names": "RAJESH",
+      "document_number": "DL-1420110029"
+    }
+  },
+  {
+    "filename": "sample_22_non_mrz_badge.jpg",
+    "condition": "NON_MRZ_BADGE",
+    "expected_extractable": true,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "BADGE",
+      "surname": "CONNER",
+      "given_names": "SARAH",
+      "document_number": "EMP-8819"
+    }
+  },
+  {
+    "filename": "sample_23_random_photo_nature.jpg",
+    "condition": "NON_DOCUMENT",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_24_random_photo_abstract.jpg",
+    "condition": "NON_DOCUMENT",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_25_blank_white.png",
+    "condition": "BLANK_WHITE",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_26_blank_black.png",
+    "condition": "BLANK_BLACK",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_27_blank_noise.png",
+    "condition": "BLANK_NOISE",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_28_text_only_code.png",
+    "condition": "TEXT_ONLY_CODE",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_29_text_only_article.jpg",
+    "condition": "TEXT_ONLY_PROSE",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_30_tampered_dob_checksum_td3.jpg",
+    "condition": "INVALID_DOB_CHECKSUM",
+    "expected_extractable": true,
+    "expected_risk": "HIGH_RISK",
+    "notes": "DOB check digit deliberately failed",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "KAPOOR",
+      "given_names": "ROHAN",
+      "document_number": "T8192038",
+      "nationality": "IND",
+      "dob": "901122",
+      "expiry_date": "301122",
+      "sex": "M",
+      "mrz_line1": "P<INDKAPOOR<<ROHAN<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "T81920382IND9811229M3011227<<<<<<<<<<<<<<2<<",
+      "is_valid_mrz": false
+    }
+  },
+  {
+    "filename": "sample_31_tampered_docnum_checksum_td3.jpg",
+    "condition": "INVALID_DOCNUM_CHECKSUM",
+    "expected_extractable": true,
+    "expected_risk": "HIGH_RISK",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "SINGH",
+      "given_names": "HARPREET",
+      "document_number": "Z1092834",
+      "nationality": "IND",
+      "dob": "860314",
+      "expiry_date": "260314",
+      "sex": "M",
+      "mrz_line1": "P<INDSINGH<<HARPREET<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "Z109283489ND8603142M2603140<<<<<<<<<<<<<<2<<",
+      "is_valid_mrz": false
+    }
+  },
+  {
+    "filename": "sample_32_spliced_portrait_tampered_td3.jpg",
+    "condition": "SPLICED_PORTRAIT",
+    "expected_extractable": true,
+    "expected_risk": "HIGH_RISK",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "MEHTA",
+      "given_names": "ANANYA",
+      "document_number": "K4918204",
+      "nationality": "IND",
+      "dob": "950820",
+      "expiry_date": "350820",
+      "sex": "M",
+      "mrz_line1": "P<INDMEHTA<<ANANYA<<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "K49182046IND9508200M3508208<<<<<<<<<<<<<<6<<",
+      "is_valid_mrz": true
+    }
+  },
+  {
+    "filename": "sample_33_corrupted_truncated.jpg",
+    "condition": "CORRUPTED_FILE",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_34_empty_0bytes.jpg",
+    "condition": "ZERO_BYTES",
+    "expected_extractable": false,
+    "expected_risk": "REVIEW",
+    "notes": "",
+    "ground_truth": {}
+  },
+  {
+    "filename": "sample_35_mismatch_viz_vs_mrz_td3.jpg",
+    "condition": "VIZ_MRZ_MISMATCH",
+    "expected_extractable": true,
+    "expected_risk": "HIGH_RISK",
+    "notes": "",
+    "ground_truth": {
+      "document_type": "PASSPORT_TD3",
+      "surname": "JOSHI",
+      "given_names": "KAVITHA",
+      "document_number": "R9910283",
+      "nationality": "IND",
+      "dob": "941010",
+      "expiry_date": "341010",
+      "sex": "M",
+      "mrz_line1": "P<INDREDDY<<KAVITHA<<<<<<<<<<<<<<<<<<<<<<<<<",
+      "mrz_line2": "R99102839IND9410109M3410107<<<<<<<<<<<<<<2<<",
+      "is_valid_mrz": true
+    }
+  }
+]

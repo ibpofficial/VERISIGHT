@@ -1,0 +1,8 @@
+{
+  "filename": "sample_34_empty_0bytes.jpg",
+  "condition": "ZERO_BYTES",
+  "expected_extractable": false,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {}
+}

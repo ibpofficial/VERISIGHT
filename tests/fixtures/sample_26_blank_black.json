@@ -1,0 +1,8 @@
+{
+  "filename": "sample_26_blank_black.png",
+  "condition": "BLANK_BLACK",
+  "expected_extractable": false,
+  "expected_risk": "REVIEW",
+  "notes": "",
+  "ground_truth": {}
+}
