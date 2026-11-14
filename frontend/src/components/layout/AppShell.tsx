@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { GlassSidebar } from './GlassSidebar';
 import { GlassTopbar } from './GlassTopbar';
+import { HelpDrawer } from '../common/HelpDrawer';
 
 export const AppShell: React.FC = () => {
   return (
@@ -19,6 +20,9 @@ export const AppShell: React.FC = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Contextual Officer Help Drawer */}
+      <HelpDrawer />
     </div>
   );
 };

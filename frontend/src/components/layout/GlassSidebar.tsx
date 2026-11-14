@@ -2,13 +2,16 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   ShieldAlert, LayoutDashboard, FilePlus, Briefcase, 
-  History, Settings, Users, Activity, LogOut, ChevronRight
+  History, Settings, Users, Activity, LogOut, ChevronRight,
+  Zap, HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import type { UserRole } from '../../types';
 
 interface NavItem {
-  name: string;
+  nameKey: string;
+  defaultName: string;
   path: string;
   icon: React.ReactNode;
   allowedRoles: UserRole[];
@@ -17,46 +20,69 @@ interface NavItem {
 
 export const GlassSidebar: React.FC = () => {
   const { user, logout, hasRole } = useAuth();
+  const { t } = usePreferences();
 
   const navItems: NavItem[] = [
     {
-      name: 'Command Center',
+      nameKey: 'nav.command_center',
+      defaultName: 'Command Center',
       path: '/dashboard',
       icon: <LayoutDashboard className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR', 'SCREENING_OFFICER', 'SENIOR_REVIEWER', 'AUDITOR'],
     },
     {
-      name: 'New Screening',
+      nameKey: 'nav.new_screening',
+      defaultName: 'New Screening',
       path: '/screenings/new',
       icon: <FilePlus className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR', 'SCREENING_OFFICER', 'SENIOR_REVIEWER'],
     },
     {
-      name: 'Investigation Cases',
+      nameKey: 'nav.quick_check',
+      defaultName: 'Quick Check',
+      path: '/quick-check',
+      icon: <Zap className="w-4 h-4 text-amber-500" />,
+      allowedRoles: ['ADMINISTRATOR', 'SCREENING_OFFICER', 'SENIOR_REVIEWER', 'AUDITOR'],
+      badge: 'NEW',
+    },
+    {
+      nameKey: 'nav.cases',
+      defaultName: 'Investigation Cases',
       path: '/cases',
       icon: <Briefcase className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR', 'SCREENING_OFFICER', 'SENIOR_REVIEWER', 'AUDITOR'],
     },
     {
-      name: 'Audit Trail',
+      nameKey: 'nav.audit',
+      defaultName: 'Audit Trail',
       path: '/audit',
       icon: <History className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR', 'SENIOR_REVIEWER', 'AUDITOR'],
     },
     {
-      name: 'Engine Status',
+      nameKey: 'nav.help',
+      defaultName: 'Help Center',
+      path: '/help',
+      icon: <HelpCircle className="w-4 h-4 text-blue-500" />,
+      allowedRoles: ['ADMINISTRATOR', 'SCREENING_OFFICER', 'SENIOR_REVIEWER', 'AUDITOR'],
+    },
+    {
+      nameKey: 'nav.engine_status',
+      defaultName: 'Engine Status',
       path: '/admin/engine-status',
       icon: <Activity className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR', 'SCREENING_OFFICER', 'SENIOR_REVIEWER', 'AUDITOR'],
     },
     {
-      name: 'User Management',
+      nameKey: 'nav.user_mgmt',
+      defaultName: 'User Management',
       path: '/admin/users',
       icon: <Users className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR'],
     },
     {
-      name: 'System Config',
+      nameKey: 'nav.system_config',
+      defaultName: 'System Config',
       path: '/admin/config',
       icon: <Settings className="w-4 h-4" />,
       allowedRoles: ['ADMINISTRATOR'],
@@ -102,9 +128,16 @@ export const GlassSidebar: React.FC = () => {
           >
             <div className="flex items-center gap-3">
               {item.icon}
-              <span>{item.name}</span>
+              <span>{t(item.nameKey) || item.defaultName}</span>
             </div>
-            <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+            <div className="flex items-center gap-1.5">
+              {item.badge && (
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300">
+                  {item.badge}
+                </span>
+              )}
+              <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+            </div>
           </NavLink>
         ))}
       </nav>

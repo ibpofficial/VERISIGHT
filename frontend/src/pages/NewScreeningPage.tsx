@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
+import { CaseStepper } from '../components/common/CaseStepper';
+import { WhatNextPanel } from '../components/common/WhatNextPanel';
 import { screeningsApi } from '../services/api';
 
 const DOCUMENT_TYPES = [
@@ -189,6 +191,24 @@ export const NewScreeningPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      {/* 6-Step Case Stepper */}
+      <CaseStepper currentStep={1} />
+
+      {/* Recommended Next Action */}
+      <WhatNextPanel
+        recommendation="Select document category and provide an identity credential image."
+        reason="The automated pipeline requires a clear image to evaluate resolution, sharpness, and ICAO 9303 compliance."
+        actionText={selectedFile ? "Initiate Automated Pipeline" : "Choose File or Take Photo"}
+        onAction={() => {
+          if (selectedFile) {
+            handleUpload();
+          } else if (fileInputRef.current) {
+            fileInputRef.current.click();
+          }
+        }}
+        helpTopic="quality"
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>

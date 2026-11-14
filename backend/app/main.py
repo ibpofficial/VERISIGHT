@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.core.database import engine, Base
 import backend.app.models  # Ensure all models are registered with Base.metadata
-from backend.app.api.v1 import auth, screenings, forensics, risk, cases, reports, audit, dashboard, admin, face
+from backend.app.api.v1 import auth, screenings, forensics, risk, cases, reports, audit, dashboard, admin, face, quick_check
 
 
 @asynccontextmanager
@@ -51,6 +51,7 @@ app.include_router(audit.router, prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
 app.include_router(face.router, prefix=settings.API_V1_STR)
+app.include_router(quick_check.router, prefix=settings.API_V1_STR)
 
 
 @app.get("/health", tags=["Health"])

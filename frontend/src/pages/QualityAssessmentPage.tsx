@@ -8,6 +8,9 @@ import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
 import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
+import { CaseStepper } from '../components/common/CaseStepper';
+import { WhatNextPanel } from '../components/common/WhatNextPanel';
+import { GlossaryTooltip } from '../components/common/GlossaryTooltip';
 import { screeningsApi } from '../services/api';
 import type { Screening, QualityAssessment } from '../types';
 
@@ -86,11 +89,33 @@ export const QualityAssessmentPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      {/* 6-Step Case Stepper */}
+      <CaseStepper currentStep={2} screeningId={id} />
+
+      {/* Recommended Next Action */}
+      <WhatNextPanel
+        recommendation={
+          quality.overall_score >= 60
+            ? "Image quality meets screening standards. Proceed to OCR field extraction."
+            : "Image quality is substandard. Inspect blur and glare flags before continuing."
+        }
+        reason={
+          quality.overall_score >= 60
+            ? "Sharpness and resolution are adequate for accurate character recognition and security code math."
+            : "Substandard lighting or motion blur may lead to false OCR recognition errors."
+        }
+        actionText="Proceed to OCR Extraction"
+        onAction={() => navigate(`/screenings/${id}/extraction`)}
+        secondaryActionText={quality.overall_score < 60 ? "Retake / Re-upload" : undefined}
+        onSecondaryAction={quality.overall_score < 60 ? () => navigate('/screenings/new') : undefined}
+        helpTopic="quality"
+      />
+
       {/* Breadcrumb & Navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1">
-            <Link to="/screenings" className="hover:text-blue-600">Screenings</Link>
+            <Link to="/cases" className="hover:text-blue-600">Cases & Screenings</Link>
             <span>/</span>
             <span className="font-mono text-slate-800">{screening.reference_no}</span>
             <span>/</span>

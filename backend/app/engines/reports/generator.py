@@ -163,7 +163,44 @@ def build_screening_pdf_report(
         ('LINEBELOW', (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
     ]))
     story.append(meta_table)
-    story.append(Spacer(1, 14))
+    story.append(Spacer(1, 10))
+
+    # Plain Language Summary & Checklist (Page 1 "Summary for Everyone")
+    plain_outcome = "No obvious signs of digital editing or math errors detected across tested security checks." if risk_level == "CLEAR" else \
+                    "Minor optical or extraction inconsistencies found that require manual comparison." if risk_level == "REVIEW" else \
+                    "Significant evidence of alteration, check-digit failure, or tampering detected."
+
+    plain_actions = [
+        "1. Compare physical document against on-screen image under good lighting.",
+        "2. Confirm traveler name and nationality match ticketing and visa records.",
+        "3. Record final clearance or escalation decision in the official case register."
+    ] if risk_level == "CLEAR" else [
+        "1. Inspect the physical credential for surface alterations, scratches, or re-glued laminate.",
+        "2. Retake photo scan in bright natural light if blur or glare affected OCR text.",
+        "3. Conduct secondary questioning if dates or personal details appear questionable."
+    ] if risk_level == "REVIEW" else [
+        "1. Escalate immediately to Senior Reviewer and open a formal Investigation Case.",
+        "2. Conduct secondary questioning regarding document issuance, travel itinerary, and origin.",
+        "3. Check physical UV/IR security fibers, watermark, and microprinting before granting clearance."
+    ]
+
+    summary_table = Table(
+        [
+            [Paragraph("<b>PLAIN LANGUAGE FINDINGS (SUMMARY FOR EVERYONE)</b>", section_heading)],
+            [Paragraph(f"<b>Overall Outcome:</b> {plain_outcome}", body_style)],
+            [Paragraph("<b>Recommended Officer Action Checklist:</b>", ParagraphStyle('SubSub', parent=body_style, fontName='Helvetica-Bold'))],
+            [Paragraph("<br/>".join([f"&bull; {act}" for act in plain_actions]), body_style)],
+            [Paragraph("<i>Notice: This automated dossier is a decision-support screening aid. A trained security officer makes the final determination.</i>", disclaimer_style)]
+        ],
+        colWidths=[7.5 * inch]
+    )
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#F1F5F9")),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor("#94A3B8")),
+        ('PADDING', (0, 0), (-1, -1), 8),
+    ]))
+    story.append(summary_table)
+    story.append(Spacer(1, 12))
 
     # Document Image Thumbnail if exists
     doc_path = document_data.get("processed_path") or document_data.get("storage_path")

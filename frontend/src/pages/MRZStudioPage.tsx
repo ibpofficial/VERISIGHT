@@ -8,6 +8,9 @@ import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
 import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
+import { CaseStepper } from '../components/common/CaseStepper';
+import { WhatNextPanel } from '../components/common/WhatNextPanel';
+import { GlossaryTooltip } from '../components/common/GlossaryTooltip';
 import { screeningsApi } from '../services/api';
 import type { Screening, MRZRecord, ExtractedField } from '../types';
 
@@ -81,11 +84,33 @@ export const MRZStudioPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      {/* 6-Step Case Stepper */}
+      <CaseStepper currentStep={3} screeningId={id} />
+
+      {/* Recommended Next Action */}
+      <WhatNextPanel
+        recommendation={
+          allChecksPass
+            ? "Passport security code math is valid. Proceed to Forensic Laboratory."
+            : "Security code check digit failure detected! Inspect Error Level Analysis in Forensics Lab."
+        }
+        reason={
+          allChecksPass
+            ? "All ICAO 9303 modulo-10 weights match the printed dates and credential numbers."
+            : "Mathematical mismatch indicates potential date alteration, expired forgery, or altered document number."
+        }
+        actionText="Proceed to Forensic Lab"
+        onAction={() => navigate(`/screenings/${id}/forensics`)}
+        secondaryActionText="Back to Extraction"
+        onSecondaryAction={() => navigate(`/screenings/${id}/extraction`)}
+        helpTopic="mrz"
+      />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1">
-            <Link to="/screenings" className="hover:text-blue-600">Screenings</Link>
+            <Link to="/cases" className="hover:text-blue-600">Cases & Screenings</Link>
             <span>/</span>
             <span className="font-mono text-slate-800">{screening.reference_no}</span>
             <span>/</span>

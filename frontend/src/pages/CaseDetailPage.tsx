@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   Briefcase, ArrowLeft, Send, CheckCircle2, 
-  FileText, AlertCircle, Edit3
+  FileText, AlertCircle, Edit3, FileDown
 } from 'lucide-react';
 import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
@@ -10,7 +10,9 @@ import { GlassModal } from '../components/glass/GlassModal';
 import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { RiskBadge } from '../components/common/RiskBadge';
-import { casesApi, screeningsApi } from '../services/api';
+import { CaseStepper } from '../components/common/CaseStepper';
+import { WhatNextPanel } from '../components/common/WhatNextPanel';
+import { casesApi, screeningsApi, reportsApi } from '../services/api';
 import type { Case, Screening, CaseStatus, CasePriority } from '../types';
 
 export const CaseDetailPage: React.FC = () => {
@@ -34,6 +36,19 @@ export const CaseDetailPage: React.FC = () => {
   const [resolutionNotes, setResolutionNotes] = useState('');
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+
+  const handleDownloadReport = async () => {
+    if (!screening?.id) return;
+    setIsDownloadingPdf(true);
+    try {
+      await reportsApi.download(screening.id, `VERISIGHT_DOSSIER_${caseItem?.case_number || screening.reference_no}.pdf`);
+    } catch (err: any) {
+      alert(err.response?.data?.detail || 'Evidentiary PDF dossier generation failed.');
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  };
 
   const fetchCaseData = async () => {
     if (!id) return;
@@ -125,6 +140,28 @@ export const CaseDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
+      {/* 6-Step Case Stepper */}
+      <CaseStepper currentStep={5} screeningId={screening?.id} caseId={id} />
+
+      {/* Recommended Next Action */}
+      <WhatNextPanel
+        recommendation={
+          caseItem.status === 'RESOLVED'
+            ? "Case is resolved. Export the official signed evidentiary dossier PDF for institutional records."
+            : "Review officer notes, inspect linked evidence, and record your resolution justification."
+        }
+        reason={
+          caseItem.status === 'RESOLVED'
+            ? "The investigation determination has been locked into the cryptographic SHA-256 audit ledger."
+            : "Closing an investigation requires documented officer rationale in compliance with SIH 26188 guidelines."
+        }
+        actionText={caseItem.status === 'RESOLVED' ? "Export Dossier PDF" : "Update Case Status"}
+        onAction={caseItem.status === 'RESOLVED' ? handleDownloadReport : () => setIsStatusModalOpen(true)}
+        secondaryActionText="View Risk Breakdown"
+        onSecondaryAction={screening ? () => navigate(`/screenings/${screening.id}/risk`) : undefined}
+        helpTopic="cases"
+      />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
@@ -158,14 +195,25 @@ export const CaseDetailPage: React.FC = () => {
             Update Case Status
           </GlassButton>
           {screening && (
-            <GlassButton
-              size="sm"
-              variant="primary"
-              onClick={() => navigate(`/screenings/${screening.id}/risk`)}
-              icon={<FileText className="w-4 h-4" />}
-            >
-              View Screening Risk
-            </GlassButton>
+            <>
+              <GlassButton
+                size="sm"
+                variant="secondary"
+                onClick={handleDownloadReport}
+                icon={<FileDown className="w-4 h-4" />}
+                disabled={isDownloadingPdf}
+              >
+                {isDownloadingPdf ? 'Generating...' : 'Export Dossier PDF'}
+              </GlassButton>
+              <GlassButton
+                size="sm"
+                variant="primary"
+                onClick={() => navigate(`/screenings/${screening.id}/risk`)}
+                icon={<FileText className="w-4 h-4" />}
+              >
+                View Screening Risk
+              </GlassButton>
+            </>
           )}
         </div>
       </div>

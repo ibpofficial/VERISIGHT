@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
-  ArrowLeft, UserCheck, AlertCircle, CheckCircle2, Briefcase
+  ArrowLeft, UserCheck, AlertCircle, CheckCircle2, Briefcase, FileDown
 } from 'lucide-react';
 import { GlassCard } from '../components/glass/GlassCard';
 import { GlassButton } from '../components/glass/GlassButton';
@@ -9,8 +9,11 @@ import { GlassModal } from '../components/glass/GlassModal';
 import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { RiskBadge } from '../components/common/RiskBadge';
+import { CaseStepper } from '../components/common/CaseStepper';
+import { WhatNextPanel } from '../components/common/WhatNextPanel';
+import { TrafficLightResult } from '../components/common/TrafficLightResult';
 import { useAuth } from '../context/AuthContext';
-import { screeningsApi, riskApi } from '../services/api';
+import { screeningsApi, riskApi, casesApi, reportsApi } from '../services/api';
 import type { Screening, RiskAssessment, RiskLevel } from '../types';
 
 export const RiskResultsPage: React.FC = () => {
@@ -29,6 +32,10 @@ export const RiskResultsPage: React.FC = () => {
   const [overrideReason, setOverrideReason] = useState('');
   const [isSubmittingOverride, setIsSubmittingOverride] = useState(false);
   const [overrideError, setOverrideError] = useState<string | null>(null);
+
+  // Case creation state
+  const [isCreatingCase, setIsCreatingCase] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
   const canOverride = hasRole(['ADMINISTRATOR', 'SENIOR_REVIEWER']);
 
@@ -90,6 +97,34 @@ export const RiskResultsPage: React.FC = () => {
     }
   };
 
+  const handleCreateCase = async () => {
+    if (!id) return;
+    setIsCreatingCase(true);
+    try {
+      const createdCase = await casesApi.create({
+        screening_id: id,
+        summary: `Screening investigation for ${screening?.reference_no} (${screening?.document_type}) with evaluated risk: ${effectiveRiskLevel}`,
+      });
+      navigate(`/cases/${createdCase.id}`);
+    } catch (err: any) {
+      alert(err.response?.data?.detail || 'Failed to initialize investigation case.');
+    } finally {
+      setIsCreatingCase(false);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    if (!id) return;
+    setIsDownloadingPdf(true);
+    try {
+      await reportsApi.download(id, `VERISIGHT_DOSSIER_${screening?.reference_no || id}.pdf`);
+    } catch (err: any) {
+      alert(err.response?.data?.detail || 'Evidentiary PDF dossier generation failed.');
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6 max-w-6xl mx-auto">
@@ -118,11 +153,40 @@ export const RiskResultsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      {/* 6-Step Case Stepper */}
+      <CaseStepper currentStep={4} screeningId={id} riskLevel={effectiveRiskLevel} />
+
+      {/* Recommended Next Action */}
+      <WhatNextPanel
+        recommendation={
+          effectiveRiskLevel === 'HIGH_RISK'
+            ? "High risk findings flagged. Create an investigation case or escalate to supervisor."
+            : effectiveRiskLevel === 'REVIEW'
+            ? "Manual review recommended. Inspect flagged fields or record supervisor override."
+            : "Credential verified with no critical anomalies. Export evidentiary PDF dossier."
+        }
+        reason={
+          effectiveRiskLevel === 'HIGH_RISK'
+            ? "Tampering, font alteration, or passport check-digit mismatch requires formal human decision and interview."
+            : effectiveRiskLevel === 'REVIEW'
+            ? "Image blur or low extraction confidence triggered threshold flags requiring human verification."
+            : "All 5 forensic checks and ICAO check-digit math satisfied baseline verification criteria."
+        }
+        actionText={effectiveRiskLevel === 'CLEAR' ? "Export Dossier PDF" : "Create Investigation Case"}
+        onAction={effectiveRiskLevel === 'CLEAR' ? handleDownloadReport : handleCreateCase}
+        secondaryActionText="Inspect Forensics"
+        onSecondaryAction={() => navigate(`/screenings/${id}/forensics`)}
+        helpTopic="risk"
+      />
+
+      {/* Traffic Light Plain Definition Banner */}
+      <TrafficLightResult level={effectiveRiskLevel} score={assessment.overall_score} />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1">
-            <Link to="/screenings" className="hover:text-blue-600">Screenings</Link>
+            <Link to="/cases" className="hover:text-blue-600">Cases & Screenings</Link>
             <span>/</span>
             <span className="font-mono text-slate-800">{screening.reference_no}</span>
             <span>/</span>
@@ -133,7 +197,7 @@ export const RiskResultsPage: React.FC = () => {
             <RiskBadge level={effectiveRiskLevel} size="md" />
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <GlassButton
             size="sm"
             variant="ghost"
@@ -141,6 +205,15 @@ export const RiskResultsPage: React.FC = () => {
             icon={<ArrowLeft className="w-4 h-4" />}
           >
             Forensics Lab
+          </GlassButton>
+          <GlassButton
+            size="sm"
+            variant="secondary"
+            onClick={handleDownloadReport}
+            icon={<FileDown className="w-4 h-4" />}
+            disabled={isDownloadingPdf}
+          >
+            {isDownloadingPdf ? 'Generating PDF...' : 'Export Dossier PDF'}
           </GlassButton>
           {canOverride && (
             <GlassButton
@@ -155,10 +228,11 @@ export const RiskResultsPage: React.FC = () => {
           <GlassButton
             size="sm"
             variant="primary"
-            onClick={() => navigate(`/cases/new?screening_id=${id}`)}
+            onClick={handleCreateCase}
             icon={<Briefcase className="w-4 h-4" />}
+            disabled={isCreatingCase}
           >
-            Create Investigation Case
+            {isCreatingCase ? 'Creating Case...' : 'Create Investigation Case'}
           </GlassButton>
         </div>
       </div>

@@ -164,6 +164,10 @@ export const casesApi = {
     const res = await apiClient.get(`/cases/${id}`);
     return res.data;
   },
+  create: async (data: { screening_id: string; priority?: string; summary?: string }) => {
+    const res = await apiClient.post('/cases', data);
+    return res.data;
+  },
   updateStatus: async (id: string, data: { status: string; priority?: string; resolution_notes?: string; notes?: string }) => {
     const res = await apiClient.patch(`/cases/${id}/status`, data);
     return res.data;
@@ -171,6 +175,24 @@ export const casesApi = {
   addNote: async (id: string, text: string) => {
     const res = await apiClient.post(`/cases/${id}/notes`, { text });
     return res.data;
+  },
+};
+
+// Institutional Report endpoints
+export const reportsApi = {
+  getDownloadUrl: (screeningId: string) => `${API_BASE}/reports/${screeningId}/download`,
+  download: async (screeningId: string, filename?: string) => {
+    const res = await apiClient.get(`/reports/${screeningId}/download`, {
+      responseType: 'blob',
+    });
+    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename || `VERISIGHT_DOSSIER_${screeningId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   },
 };
 
@@ -190,6 +212,26 @@ export const auditApi = {
 export const dashboardApi = {
   getStats: async () => {
     const res = await apiClient.get('/dashboard/stats');
+    return res.data;
+  },
+};
+
+// Standalone Quick Check endpoints
+export const quickCheckApi = {
+  upload: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await apiClient.post('/quick-checks', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
+  },
+  get: async (checkId: string) => {
+    const res = await apiClient.get(`/quick-checks/${checkId}`);
+    return res.data;
+  },
+  escalate: async (checkId: string) => {
+    const res = await apiClient.post(`/quick-checks/${checkId}/escalate`);
     return res.data;
   },
 };

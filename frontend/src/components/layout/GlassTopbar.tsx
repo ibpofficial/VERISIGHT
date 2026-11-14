@@ -1,14 +1,19 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { HelpCircle, Languages, Sliders, Check } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { usePreferences } from '../../context/PreferencesContext';
 
 export const GlassTopbar: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const { mode, toggleMode, language, toggleLanguage, openHelp, t } = usePreferences();
 
   const getPageTitle = (path: string) => {
     if (path === '/dashboard') return 'Command Center & Operations Dashboard';
-    if (path.startsWith('/screening/new')) return 'Document Ingestion & Screening Setup';
+    if (path === '/quick-check') return 'Quick Check — Standalone Document Inspection';
+    if (path === '/help') return 'Officer Knowledge Base & Training Center';
+    if (path.startsWith('/screenings/new')) return 'Document Ingestion & Screening Setup';
     if (path.includes('/quality')) return 'Image Quality & Optical Preprocessing';
     if (path.includes('/extraction')) return 'OCR Extraction & Field Mapping';
     if (path.includes('/mrz')) return 'MRZ Cryptographic Verification Studio';
@@ -25,8 +30,19 @@ export const GlassTopbar: React.FC = () => {
     return 'Identity & Travel Document Screening';
   };
 
+  const getActiveHelpTopic = (path: string) => {
+    if (path.includes('/quality')) return 'quality';
+    if (path.includes('/extraction')) return 'ocr';
+    if (path.includes('/mrz')) return 'mrz';
+    if (path.includes('/forensics')) return 'forensics';
+    if (path.includes('/face')) return 'face';
+    if (path.includes('/risk')) return 'risk';
+    if (path.startsWith('/cases')) return 'cases';
+    return undefined;
+  };
+
   return (
-    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/80 fixed top-0 right-0 left-64 z-20 px-6 flex items-center justify-between shadow-2xs">
+    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/80 fixed top-0 right-0 left-64 z-20 px-6 flex items-center justify-between shadow-2xs select-none">
       {/* Breadcrumb & View Info */}
       <div className="flex items-center gap-3">
         <h2 className="text-sm font-semibold text-slate-800 tracking-tight">
@@ -35,9 +51,45 @@ export const GlassTopbar: React.FC = () => {
       </div>
 
       {/* Center/Right Status & Telemetry */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {/* Simple Mode / Expert Mode Toggle */}
+        <button
+          type="button"
+          onClick={toggleMode}
+          title={t('mode.toggle_tooltip')}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all ${
+            mode === 'expert'
+              ? 'bg-purple-50 border-purple-300 text-purple-700 shadow-xs'
+              : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
+          }`}
+        >
+          <Sliders className="w-3.5 h-3.5 text-blue-600" />
+          <span>{mode === 'expert' ? t('mode.expert') : t('mode.simple')}</span>
+        </button>
+
+        {/* Language Toggle (EN / हिन्दी) */}
+        <button
+          type="button"
+          onClick={toggleLanguage}
+          title="Toggle Language (English / हिन्दी)"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 transition-all"
+        >
+          <Languages className="w-3.5 h-3.5 text-indigo-600" />
+          <span className="font-semibold">{language === 'en' ? 'EN' : 'HI (हिन्दी)'}</span>
+        </button>
+
+        {/* Contextual Help Button */}
+        <button
+          type="button"
+          onClick={() => openHelp(getActiveHelpTopic(location.pathname))}
+          title="Open Field Guide & Contextual Help"
+          className="p-1.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-colors"
+        >
+          <HelpCircle className="w-4 h-4" />
+        </button>
+
         {/* System Health Pill */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-medium">
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span>ENGINES READY</span>
         </div>

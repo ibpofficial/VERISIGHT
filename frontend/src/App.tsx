@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { PreferencesProvider } from './context/PreferencesContext';
 import { AppShell } from './components/layout/AppShell';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -12,12 +13,15 @@ import { MRZStudioPage } from './pages/MRZStudioPage';
 import { ForensicLabPage } from './pages/ForensicLabPage';
 import { FaceVerificationPage } from './pages/FaceVerificationPage';
 import { RiskResultsPage } from './pages/RiskResultsPage';
+import { QuickCheckPage } from './pages/QuickCheckPage';
+import { HelpCenterPage } from './pages/HelpCenterPage';
 import { CaseQueuePage } from './pages/CaseQueuePage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
 import { AuditPage } from './pages/AuditPage';
 import { EngineStatusPage } from './pages/EngineStatusPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
 import { AdminConfigPage } from './pages/AdminConfigPage';
+import { AdminSelfTestPage } from './pages/AdminSelfTestPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -54,7 +58,8 @@ export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
+        <PreferencesProvider>
+          <BrowserRouter>
           <Routes>
             {/* Public Auth Routes */}
             <Route path="/login" element={<LoginPage />} />
@@ -70,8 +75,11 @@ export const App: React.FC = () => {
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="quick-check" element={<QuickCheckPage />} />
+              <Route path="help" element={<HelpCenterPage />} />
               
               {/* Screening & Processing Pipeline */}
+              <Route path="screenings" element={<Navigate to="/cases" replace />} />
               <Route path="screenings/new" element={<NewScreeningPage />} />
               <Route path="screenings/:id/quality" element={<QualityAssessmentPage />} />
               <Route path="screenings/:id/extraction" element={<ExtractionPage />} />
@@ -89,6 +97,7 @@ export const App: React.FC = () => {
 
               {/* Admin & System Health */}
               <Route path="admin/engine-status" element={<EngineStatusPage />} />
+              <Route path="admin/self-test" element={<AdminSelfTestPage />} />
               <Route path="admin/users" element={<AdminUsersPage />} />
               <Route path="admin/config" element={<AdminConfigPage />} />
             </Route>
@@ -97,6 +106,7 @@ export const App: React.FC = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
+        </PreferencesProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
