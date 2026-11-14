@@ -176,3 +176,4 @@ Generated programmatically via `scripts/generate_golden_test_set.py` using OpenC
    - Implement true `/api/v1/health/live` and `/api/v1/health/ready` that verify database connection, upload storage writability, and OCR engines.
 4. **Anti-Simulation CI Guard:**
    - Add automated test asserting that blank, random, and text-only images generate 0 identity fields, and scanning for forbidden mock strings in non-test source.
+

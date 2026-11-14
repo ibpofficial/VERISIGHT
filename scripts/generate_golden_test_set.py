@@ -400,3 +400,4 @@ with open(manifest_path, "w", encoding="utf-8") as f:
     json.dump(manifest, f, indent=2)
 
 print(f"Successfully generated {generated_count} synthetic golden fixtures in {FIXTURES_DIR} with master manifest.json!")
+
