@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <!-- Dark Navy Liquid Glass Gradients -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050B14" />
+      <stop offset="40%" stop-color="#080F1D" />
+      <stop offset="80%" stop-color="#0D1A30" />
+      <stop offset="100%" stop-color="#050B14" />
+    </linearGradient>
+
+    <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4">
+        <animate attributeName="stop-color" values="#06B6D4;#3B82F6;#10B981;#06B6D4" dur="8s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#3B82F6">
+        <animate attributeName="stop-color" values="#3B82F6;#8B5CF6;#06B6D4;#3B82F6" dur="8s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+
+    <linearGradient id="card-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(17, 30, 50, 0.85)" />
+      <stop offset="100%" stop-color="rgba(8, 15, 29, 0.75)" />
+    </linearGradient>
+
+    <filter id="glow-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="deep-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+
+    <style>
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.04); }
+      }
+      @keyframes floatSlow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+      @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(420px); }
+      }
+      .floating { animation: floatSlow 5s ease-in-out infinite; }
+      .pulsing { animation: pulse 4s ease-in-out infinite; }
+      .mono-text { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      .sans-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="420" fill="url(#bg-grad)" rx="16" />
+
+  <!-- Cyber Grid Pattern Overlay -->
+  <g opacity="0.12">
+    <path d="M 0,70 L 1200,70 M 0,140 L 1200,140 M 0,210 L 1200,210 M 0,280 L 1200,280 M 0,350 L 1200,350" stroke="#06B6D4" stroke-width="1" />
+    <path d="M 120,0 L 120,420 M 240,0 L 240,420 M 360,0 L 360,420 M 480,0 L 480,420 M 600,0 L 600,420 M 720,0 L 720,420 M 840,0 L 840,420 M 960,0 L 960,420 M 1080,0 L 1080,420" stroke="#06B6D4" stroke-width="1" />
+  </g>
+
+  <!-- Ambient Glowing Orbs -->
+  <circle cx="150" cy="120" r="140" fill="#06B6D4" opacity="0.15" filter="url(#glow-blur)" class="pulsing" />
+  <circle cx="1050" cy="300" r="160" fill="#3B82F6" opacity="0.12" filter="url(#glow-blur)" class="pulsing" style="animation-delay: -2s;" />
+
+  <!-- Main Hero Liquid Glass Card -->
+  <rect x="50" y="40" width="1100" height="340" rx="20" fill="url(#card-grad)" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.5" filter="url(#deep-shadow)" />
+
+  <!-- Top Decorative Accent Strip -->
+  <rect x="50" y="40" width="1100" height="4" rx="2" fill="url(#cyan-glow)" />
+
+  <!-- Badge: SIH 2026 -->
+  <g transform="translate(90, 80)">
+    <rect width="360" height="32" rx="16" fill="rgba(6, 182, 212, 0.12)" stroke="#06B6D4" stroke-width="1" />
+    <circle cx="18" cy="16" r="5" fill="#10B981">
+      <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <text x="32" y="21" fill="#38BDF8" font-size="12" font-weight="700" class="sans-text" letter-spacing="1.2">SMART INDIA HACKATHON 2026 • PS 26188</text>
+  </g>
+
+  <!-- Badge: Agency Ownership -->
+  <g transform="translate(710, 80)">
+    <rect width="400" height="32" rx="16" fill="rgba(59, 130, 246, 0.12)" stroke="#3B82F6" stroke-width="1" />
+    <text x="24" y="21" fill="#93C5FD" font-size="12" font-weight="600" class="sans-text" letter-spacing="0.8">MINISTRY OF HOME AFFAIRS • SSB POLICE II</text>
+  </g>
+
+  <!-- Left: Emblem / Shield Graphic -->
+  <g transform="translate(90, 140)" class="floating">
+    <!-- Outer Shield Hex / Ring -->
+    <circle cx="65" cy="75" r="58" fill="none" stroke="rgba(6, 182, 212, 0.3)" stroke-width="2" stroke-dasharray="6,4">
+      <animateTransform attributeName="transform" type="rotate" from="0 65 75" to="360 65 75" dur="24s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="65" cy="75" r="48" fill="rgba(8, 25, 48, 0.9)" stroke="url(#cyan-glow)" stroke-width="2" filter="url(#glow-blur)" />
+    <!-- Shield Icon Paths -->
+    <path d="M 65 42 L 95 56 C 95 85 80 105 65 112 C 50 105 35 85 35 56 Z" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linejoin="round" />
+    <path d="M 52 74 L 62 84 L 80 64" fill="none" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Center Text Content -->
+  <!-- Product Title -->
+  <text x="250" y="195" fill="#FFFFFF" font-size="52" font-weight="900" class="sans-text" letter-spacing="1.5">
+    VERISIGHT
+  </text>
+  <!-- Glow under title -->
+  <text x="250" y="195" fill="none" stroke="#06B6D4" stroke-width="1.5" opacity="0.6" font-size="52" font-weight="900" class="sans-text" letter-spacing="1.5">
+    VERISIGHT
+  </text>
+
+  <!-- Tagline -->
+  <text x="252" y="232" fill="#94A3B8" font-size="16" font-weight="500" class="sans-text">
+    Autonomous AI Document Forensic &amp; Identity Verification Platform
+  </text>
+
+  <!-- Core Case Story Pills -->
+  <g transform="translate(252, 260)">
+    <text x="0" y="24" fill="#38BDF8" font-size="13" font-weight="700" class="mono-text">
+      ONE CASE → MULTI-DOCS → INDEPENDENT VERIFICATION → EVIDENCE FINDINGS → HUMAN DECISION
+    </text>
+  </g>
+
+  <!-- Bottom Metric / Pill Tags -->
+  <g transform="translate(90, 320)">
+    <!-- Pill 1: Deterministic -->
+    <g transform="translate(0, 0)">
+      <rect width="185" height="30" rx="8" fill="rgba(16, 185, 129, 0.12)" stroke="#10B981" stroke-width="1" />
+      <text x="14" y="20" fill="#34D399" font-size="12" font-weight="600" class="sans-text">🔒 100% Offline Forensic</text>
+    </g>
+
+    <!-- Pill 2: ICAO Math -->
+    <g transform="translate(200, 0)">
+      <rect width="195" height="30" rx="8" fill="rgba(6, 182, 212, 0.12)" stroke="#06B6D4" stroke-width="1" />
+      <text x="14" y="20" fill="#38BDF8" font-size="12" font-weight="600" class="sans-text">📐 ICAO 9303 Check Digits</text>
+    </g>
+
+    <!-- Pill 3: ELA & Texture -->
+    <g transform="translate(410, 0)">
+      <rect width="180" height="30" rx="8" fill="rgba(139, 92, 246, 0.12)" stroke="#8B5CF6" stroke-width="1" />
+      <text x="14" y="20" fill="#C4B5FD" font-size="12" font-weight="600" class="sans-text">🔬 ELA Pixel Heatmaps</text>
+    </g>
+
+    <!-- Pill 4: Merkle Chain -->
+    <g transform="translate(605, 0)">
+      <rect width="190" height="30" rx="8" fill="rgba(245, 158, 11, 0.12)" stroke="#F59E0B" stroke-width="1" />
+      <text x="14" y="20" fill="#FBBF24" font-size="12" font-weight="600" class="sans-text">🔗 Merkle SHA-256 Ledger</text>
+    </g>
+
+    <!-- Pill 5: DPDP Act -->
+    <g transform="translate(810, 0)">
+      <rect width="210" height="30" rx="8" fill="rgba(236, 72, 153, 0.12)" stroke="#EC4899" stroke-width="1" />
+      <text x="14" y="20" fill="#F472B6" font-size="12" font-weight="600" class="sans-text">🛡️ DPDP Act 2023 §6 Compliant</text>
+    </g>
+  </g>
+</svg>

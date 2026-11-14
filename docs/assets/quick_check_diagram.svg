@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="qc-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080F1D" />
+      <stop offset="100%" stop-color="#0B132B" />
+    </linearGradient>
+    <style>
+      .qc-title { font-family: -apple-system, sans-serif; font-size: 15px; font-weight: 700; fill: #FFFFFF; }
+      .qc-desc { font-family: -apple-system, sans-serif; font-size: 11px; fill: #94A3B8; }
+      .qc-tag { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="300" rx="16" fill="url(#qc-bg)" stroke="#1E293B" stroke-width="1.5" />
+
+  <text x="40" y="45" font-family="-apple-system, sans-serif" font-size="18" font-weight="800" fill="#38BDF8" letter-spacing="1">
+    STANDALONE QUICK CHECK ENGINE (/quick-check)
+  </text>
+  <text x="40" y="68" font-family="-apple-system, sans-serif" font-size="12" fill="#64748B">
+    Inspect arbitrary documents and images instantly for tampering without opening a formal case binder.
+  </text>
+
+  <!-- Box 1: File Intake -->
+  <g transform="translate(40, 95)">
+    <rect width="240" height="170" rx="12" fill="#0E192D" stroke="#0284C7" stroke-width="1.5" />
+    <text x="20" y="32" class="qc-title">1. File Format Sniffing</text>
+    <text x="20" y="58" class="qc-desc">• Magic Byte Verification</text>
+    <text x="20" y="78" class="qc-desc">• Header vs Extension check</text>
+    <text x="20" y="98" class="qc-desc">• Sandboxed Parser</text>
+    <rect x="20" y="125" width="200" height="26" rx="6" fill="rgba(2,132,199,0.15)" />
+    <text x="120" y="142" text-anchor="middle" fill="#38BDF8" class="qc-tag">JPG / PNG / PDF / DOCX</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <path d="M 290 180 L 330 180" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrow)" />
+
+  <!-- Box 2: Analysis Triad -->
+  <g transform="translate(340, 95)">
+    <rect width="520" height="170" rx="12" fill="#0D1A30" stroke="#8B5CF6" stroke-width="1.5" />
+    <text x="24" y="32" class="qc-title">2. Deep Forensic Triad</text>
+    
+    <!-- Sub column A: Images -->
+    <g transform="translate(24, 45)">
+      <rect width="145" height="105" rx="8" fill="#131C35" stroke="#334155" />
+      <text x="12" y="22" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#A78BFA">IMAGES</text>
+      <text x="12" y="42" class="qc-desc">ELA Pixel Heatmap</text>
+      <text x="12" y="60" class="qc-desc">EXIF Software Tags</text>
+      <text x="12" y="78" class="qc-desc">High-Freq Texture</text>
+    </g>
+
+    <!-- Sub column B: PDF -->
+    <g transform="translate(185, 45)">
+      <rect width="150" height="105" rx="8" fill="#131C35" stroke="#334155" />
+      <text x="12" y="22" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#38BDF8">PDF REVISIONS</text>
+      <text x="12" y="42" class="qc-desc">%%EOF Update Count</text>
+      <text x="12" y="60" class="qc-desc">Post-Issuance Delta</text>
+      <text x="12" y="78" class="qc-desc">Embedded Objects</text>
+    </g>
+
+    <!-- Sub column C: DOCX -->
+    <g transform="translate(350, 45)">
+      <rect width="145" height="105" rx="8" fill="#131C35" stroke="#334155" />
+      <text x="12" y="22" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#34D399">DOCX XML</text>
+      <text x="12" y="42" class="qc-desc">Tracked Changes</text>
+      <text x="12" y="60" class="qc-desc">Session IDs (rsid)</text>
+      <text x="12" y="78" class="qc-desc">Hidden Comments</text>
+    </g>
+  </g>
+
+  <!-- Arrow 2 -->
+  <path d="M 870 180 L 910 180" stroke="#8B5CF6" stroke-width="2.5" />
+
+  <!-- Box 3: Honest Framing & Escalation -->
+  <g transform="translate(920, 95)">
+    <rect width="240" height="170" rx="12" fill="#0E1E2E" stroke="#10B981" stroke-width="1.5" />
+    <text x="20" y="32" class="qc-title">3. Actionable Output</text>
+    <text x="20" y="58" class="qc-desc">• Honest Framing Verdict</text>
+    <text x="20" y="78" class="qc-desc">• Interactive Heatmap Layer</text>
+    <text x="20" y="98" class="qc-desc">• One-Click Escalation</text>
+    <rect x="20" y="125" width="200" height="26" rx="6" fill="rgba(16,185,129,0.15)" />
+    <text x="120" y="142" text-anchor="middle" fill="#34D399" class="qc-tag">"CREATE FULL CASE"</text>
+  </g>
+</svg>

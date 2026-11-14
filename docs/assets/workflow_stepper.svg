@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg2-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080F1D" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <linearGradient id="step-active" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0EA5E9" />
+    </linearGradient>
+
+    <linearGradient id="step-done" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <filter id="card-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#06B6D4" flood-opacity="0.25" />
+    </filter>
+
+    <style>
+      .step-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 700; fill: #FFFFFF; }
+      .step-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; fill: #94A3B8; }
+      .step-num { font-family: ui-monospace, monospace; font-size: 14px; font-weight: 800; fill: #FFFFFF; }
+      .badge-text { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="320" rx="16" fill="url(#bg2-grad)" stroke="#1E293B" stroke-width="1.5" />
+
+  <!-- Top Title Strip -->
+  <text x="40" y="45" font-family="-apple-system, sans-serif" font-size="18" font-weight="800" fill="#38BDF8" letter-spacing="1">
+    VERISIGHT GUIDED CASE STORYLINE (THE 6-STEP PERSISTENT PIPELINE)
+  </text>
+  <text x="40" y="68" font-family="-apple-system, sans-serif" font-size="12" fill="#64748B">
+    Every case follows an auditable, human-in-the-loop workflow. Automated checks advise; the officer decides.
+  </text>
+
+  <!-- Connecting Path Behind Steps -->
+  <path d="M 120 180 L 1080 180" stroke="#334155" stroke-width="3" stroke-dasharray="6 4" />
+  <path d="M 120 180 L 880 180" stroke="#0EA5E9" stroke-width="3" />
+
+  <!-- STEP 1 -->
+  <g transform="translate(40, 100)">
+    <rect width="165" height="160" rx="12" fill="#0D1A30" stroke="#10B981" stroke-width="1.5" />
+    <circle cx="82" cy="40" r="22" fill="url(#step-done)" />
+    <text x="77" y="46" class="step-num">✓</text>
+    <text x="82" y="85" text-anchor="middle" class="step-title">1. Intake</text>
+    <text x="82" y="105" text-anchor="middle" class="step-sub">TD1 / TD2 / TD3</text>
+    <text x="82" y="122" text-anchor="middle" class="step-sub">Multi-Doc Binder</text>
+    <rect x="25" y="132" width="115" height="18" rx="9" fill="rgba(16,185,129,0.15)" />
+    <text x="82" y="145" text-anchor="middle" fill="#34D399" class="badge-text">COMPLETED</text>
+  </g>
+
+  <!-- STEP 2 -->
+  <g transform="translate(230, 100)">
+    <rect width="165" height="160" rx="12" fill="#0D1A30" stroke="#10B981" stroke-width="1.5" />
+    <circle cx="82" cy="40" r="22" fill="url(#step-done)" />
+    <text x="77" y="46" class="step-num">✓</text>
+    <text x="82" y="85" text-anchor="middle" class="step-title">2. Quality</text>
+    <text x="82" y="105" text-anchor="middle" class="step-sub">Laplacian Blur</text>
+    <text x="82" y="122" text-anchor="middle" class="step-sub">Hough Deskew</text>
+    <rect x="25" y="132" width="115" height="18" rx="9" fill="rgba(16,185,129,0.15)" />
+    <text x="82" y="145" text-anchor="middle" fill="#34D399" class="badge-text">SCORE: 184.2</text>
+  </g>
+
+  <!-- STEP 3 -->
+  <g transform="translate(420, 100)">
+    <rect width="165" height="160" rx="12" fill="#0D1A30" stroke="#10B981" stroke-width="1.5" />
+    <circle cx="82" cy="40" r="22" fill="url(#step-done)" />
+    <text x="77" y="46" class="step-num">✓</text>
+    <text x="82" y="85" text-anchor="middle" class="step-title">3. OCR &amp; MRZ</text>
+    <text x="82" y="105" text-anchor="middle" class="step-sub">Neural Bounding Box</text>
+    <text x="82" y="122" text-anchor="middle" class="step-sub">ICAO 7-3-1 Checksum</text>
+    <rect x="25" y="132" width="115" height="18" rx="9" fill="rgba(16,185,129,0.15)" />
+    <text x="82" y="145" text-anchor="middle" fill="#34D399" class="badge-text">ALL VALID</text>
+  </g>
+
+  <!-- STEP 4 -->
+  <g transform="translate(610, 100)">
+    <rect width="165" height="160" rx="12" fill="#0D1A30" stroke="#10B981" stroke-width="1.5" />
+    <circle cx="82" cy="40" r="22" fill="url(#step-done)" />
+    <text x="77" y="46" class="step-num">✓</text>
+    <text x="82" y="85" text-anchor="middle" class="step-title">4. Forensics</text>
+    <text x="82" y="105" text-anchor="middle" class="step-sub">ELA Pixel Heatmaps</text>
+    <text x="82" y="122" text-anchor="middle" class="step-sub">EXIF / Font Baseline</text>
+    <rect x="25" y="132" width="115" height="18" rx="9" fill="rgba(16,185,129,0.15)" />
+    <text x="82" y="145" text-anchor="middle" fill="#34D399" class="badge-text">LOW ANOMALY</text>
+  </g>
+
+  <!-- STEP 5 -->
+  <g transform="translate(800, 100)">
+    <rect width="165" height="160" rx="12" fill="#112240" stroke="#0284C7" stroke-width="2" filter="url(#card-glow)" />
+    <circle cx="82" cy="40" r="22" fill="url(#step-active)" />
+    <text x="78" y="46" class="step-num">5</text>
+    <text x="82" y="85" text-anchor="middle" class="step-title">5. Decide</text>
+    <text x="82" y="105" text-anchor="middle" class="step-sub">Officer Notes</text>
+    <text x="82" y="122" text-anchor="middle" class="step-sub">Reviewer Override</text>
+    <rect x="25" y="132" width="115" height="18" rx="9" fill="rgba(14,165,233,0.2)" />
+    <text x="82" y="145" text-anchor="middle" fill="#38BDF8" class="badge-text">ACTIVE IN-PROGRESS</text>
+  </g>
+
+  <!-- STEP 6 -->
+  <g transform="translate(990, 100)">
+    <rect width="165" height="160" rx="12" fill="#0A1120" stroke="#334155" stroke-width="1.2" />
+    <circle cx="82" cy="40" r="22" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+    <text x="78" y="46" class="step-num" fill="#94A3B8">6</text>
+    <text x="82" y="85" text-anchor="middle" class="step-title" fill="#94A3B8">6. Report</text>
+    <text x="82" y="105" text-anchor="middle" class="step-sub">2-Layer PDF Dossier</text>
+    <text x="82" y="122" text-anchor="middle" class="step-sub">SHA-256 Merkle Block</text>
+    <rect x="25" y="132" width="115" height="18" rx="9" fill="rgba(100,116,139,0.15)" />
+    <text x="82" y="145" text-anchor="middle" fill="#94A3B8" class="badge-text">READY UPON CLOSE</text>
+  </g>
+</svg>
