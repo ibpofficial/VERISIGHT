@@ -148,8 +148,30 @@ export const NewScreeningPage: React.FC = () => {
 
     setIsSubmitting(true);
     setErrorMessage(null);
-    setUploadProgress(10);
+    setUploadProgress(15);
     setCurrentStep('Hashing evidence & validating image headers...');
+
+    // Dynamic progress ticker that smoothly updates while server is computing
+    const stages = [
+      { progress: 25, text: 'Computing optical quality assessment & DPI metrics...' },
+      { progress: 45, text: 'Rectifying orientation, deskewing & bilateral denoising...' },
+      { progress: 65, text: 'Running neural OCR & detecting character coordinates...' },
+      { progress: 80, text: 'Verifying ICAO 9303 modulo-10 check digits...' },
+      { progress: 90, text: 'Sealing cryptographic Merkle audit block...' },
+      { progress: 95, text: 'Finalizing screening dossier on cloud server...' },
+    ];
+
+    let stageIdx = 0;
+    const progressInterval = setInterval(() => {
+      if (stageIdx < stages.length) {
+        setUploadProgress(stages[stageIdx].progress);
+        setCurrentStep(stages[stageIdx].text);
+        stageIdx++;
+      } else {
+        // Slowly increment up to 98% while waiting for cloud server
+        setUploadProgress((prev) => (prev < 98 ? prev + 1 : prev));
+      }
+    }, 900);
 
     try {
       const formData = new FormData();
@@ -161,30 +183,19 @@ export const NewScreeningPage: React.FC = () => {
         formData.append('scenario_tag', scenarioTag);
       }
 
-      setUploadProgress(30);
-      setCurrentStep('Computing optical quality assessment & DPI metrics...');
-
-      setTimeout(() => {
-        setUploadProgress(60);
-        setCurrentStep('Rectifying orientation, deskewing & bilateral denoising...');
-      }, 500);
-
-      setTimeout(() => {
-        setUploadProgress(85);
-        setCurrentStep('Running neural OCR & verifying ICAO 9303 check digits...');
-      }, 1000);
-
       const result = await screeningsApi.create(formData);
+      clearInterval(progressInterval);
       setUploadProgress(100);
-      setCurrentStep('Screening complete. Redirecting to Quality Report...');
+      setCurrentStep('Screening complete! Redirecting to Quality Report...');
 
       setTimeout(() => {
         navigate(`/screenings/${result.id}/quality`);
-      }, 600);
+      }, 500);
     } catch (err: any) {
+      clearInterval(progressInterval);
       setIsSubmitting(false);
       setUploadProgress(0);
-      const detail = err.response?.data?.detail || 'An error occurred during document intake.';
+      const detail = err.response?.data?.detail || err.message || 'An error occurred during document intake.';
       setErrorMessage(detail);
     }
   };
@@ -347,17 +358,19 @@ export const NewScreeningPage: React.FC = () => {
 
             {/* Submission Progress Indicator */}
             {isSubmitting && (
-              <div className="mt-6 p-4 rounded-xl bg-blue-50/70 border border-blue-200 space-y-3">
+              <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-blue-50/90 to-sky-50/90 border border-blue-200/80 shadow-xs space-y-3 animate-pulse">
                 <div className="flex items-center justify-between text-xs font-medium text-blue-900">
                   <span className="flex items-center gap-2">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600" />
-                    {currentStep}
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600 flex-shrink-0" />
+                    <span>{currentStep}</span>
                   </span>
-                  <span>{uploadProgress}%</span>
+                  <span className="font-mono font-bold text-blue-700 bg-blue-100/80 px-2 py-0.5 rounded-md">
+                    {uploadProgress}%
+                  </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-blue-200 overflow-hidden">
+                <div className="w-full h-2.5 rounded-full bg-blue-200/70 overflow-hidden shadow-inner">
                   <div 
-                    className="h-full bg-blue-600 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 rounded-full transition-all duration-300 ease-out"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
