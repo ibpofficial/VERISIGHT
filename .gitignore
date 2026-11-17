@@ -148,6 +148,8 @@ env/
 
 # Databases & Runtime Data
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 verisight.db

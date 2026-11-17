@@ -26,20 +26,21 @@ from backend.app.engines.mrz.parser import parse_mrz, parse_mrz_td3, cross_check
 
 router = APIRouter(prefix="/screenings", tags=["Document Screening"])
 
-VALID_MAGIC_BYTES = {
-    b"\xFF\xD8\xFF": "image/jpeg",
-    b"\x89PNG\r\n\x1a\n": "image/png",
-}
-
-
 def validate_image_bytes(contents: bytes) -> str:
     """Validate file type by inspection of magic bytes (prevent MIME spoofing)."""
-    for magic, mime in VALID_MAGIC_BYTES.items():
-        if contents.startswith(magic):
-            return mime
+    if contents.startswith(b"\xFF\xD8\xFF"):
+        return "image/jpeg"
+    if contents.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png"
+    if len(contents) >= 12 and contents.startswith(b"RIFF") and contents[8:12] == b"WEBP":
+        return "image/webp"
+    if contents.startswith(b"BM"):
+        return "image/bmp"
+    if contents.startswith(b"II*\x00") or contents.startswith(b"MM\x00*"):
+        return "image/tiff"
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
-        detail="Unsupported or corrupted file type. Supported formats: PNG, JPEG."
+        detail="Unsupported or corrupted file type. Supported formats: JPEG, PNG, WEBP, BMP, TIFF."
     )
 
 
@@ -72,7 +73,14 @@ async def create_screening(
 
     # 3. Store raw original image securely
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-    extension = ".png" if "png" in mime_type else ".jpg"
+    extension_map = {
+        "image/jpeg": ".jpg",
+        "image/png": ".png",
+        "image/webp": ".webp",
+        "image/bmp": ".bmp",
+        "image/tiff": ".tiff",
+    }
+    extension = extension_map.get(mime_type, ".jpg")
     original_filename = f"{reference_no}_orig{extension}"
     raw_storage_path = os.path.join(settings.UPLOAD_DIR, original_filename)
 
