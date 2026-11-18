@@ -115,6 +115,18 @@ export const screeningsApi = {
     const res = await apiClient.get(`/screenings/${id}/mrz`);
     return res.data;
   },
+  getStatus: async (id: string) => {
+    const res = await apiClient.get(`/screenings/${id}/status`);
+    return res.data;
+  },
+  retry: async (id: string) => {
+    const res = await apiClient.post(`/screenings/${id}/retry`);
+    return res.data;
+  },
+  cancel: async (id: string) => {
+    const res = await apiClient.post(`/screenings/${id}/cancel`);
+    return res.data;
+  },
 };
 
 // Forensics endpoints

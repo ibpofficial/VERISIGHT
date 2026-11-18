@@ -184,6 +184,27 @@ class ScreeningCreateRequest(BaseModel):
     scenario_tag: Optional[str] = None
 
 
+class StageStatusDetail(BaseModel):
+    status: str  # PENDING, RUNNING, COMPLETED, FAILED, DEPENDENCY_FAILED, SKIPPED
+    timing_ms: Optional[int] = None
+    error: Optional[str] = None
+    details: Optional[Dict[str, Any]] = None
+
+
+class ScreeningStatusResponse(BaseModel):
+    id: str
+    reference_no: str
+    status: ScreeningStatus
+    current_stage: Optional[str] = None
+    overall_progress: int = 0
+    stages: Dict[str, StageStatusDetail]
+    rescan_instructions: Optional[str] = None
+    error_message: Optional[str] = None
+    is_aborted: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ScreeningResponse(BaseModel):
     id: str
     reference_no: str
@@ -196,6 +217,9 @@ class ScreeningResponse(BaseModel):
     processing_time_ms: Optional[int]
     is_synthetic: bool
     scenario_tag: Optional[str]
+    current_stage: Optional[str] = None
+    rescan_instructions: Optional[str] = None
+    is_aborted: bool = False
     created_at: datetime
     updated_at: datetime
 

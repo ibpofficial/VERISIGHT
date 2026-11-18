@@ -21,8 +21,11 @@ class ScreeningStatus(str, enum.Enum):
     PENDING = "PENDING"
     PREPROCESSING = "PREPROCESSING"
     ANALYZING = "ANALYZING"
+    PROCESSING = "PROCESSING"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
+    REJECTED_POOR_QUALITY = "REJECTED_POOR_QUALITY"
+    ABORTED = "ABORTED"
 
 
 class RiskLevel(str, enum.Enum):
@@ -127,6 +130,10 @@ class Screening(Base):
     processing_time_ms = Column(Integer, nullable=True)
     is_synthetic = Column(Boolean, default=False, nullable=False, index=True)
     scenario_tag = Column(String(64), nullable=True)
+    stage_details = Column(JSON, default=dict, nullable=False)
+    current_stage = Column(String(64), nullable=True)
+    rescan_instructions = Column(Text, nullable=True)
+    is_aborted = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False, index=True)
     updated_at = Column(DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False)
 

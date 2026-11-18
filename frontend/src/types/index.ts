@@ -17,10 +17,29 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
-export type ScreeningStatus = 'PENDING' | 'PREPROCESSING' | 'ANALYZING' | 'COMPLETED' | 'FAILED';
+export type ScreeningStatus = 'PENDING' | 'PREPROCESSING' | 'ANALYZING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'REJECTED_POOR_QUALITY' | 'ABORTED';
 export type RiskLevel = 'CLEAR' | 'REVIEW' | 'HIGH_RISK';
 export type CaseStatus = 'OPEN' | 'IN_REVIEW' | 'ESCALATED' | 'RESOLVED' | 'RETURNED';
 export type CasePriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+
+export interface StageStatusDetail {
+  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'DEPENDENCY_FAILED' | 'SKIPPED';
+  timing_ms?: number | null;
+  error?: string | null;
+  details?: Record<string, any> | null;
+}
+
+export interface ScreeningStatusResponse {
+  id: string;
+  reference_no: string;
+  status: ScreeningStatus;
+  current_stage?: string | null;
+  overall_progress: number;
+  stages: Record<string, StageStatusDetail>;
+  rescan_instructions?: string | null;
+  error_message?: string | null;
+  is_aborted: boolean;
+}
 
 export interface Screening {
   id: string;

@@ -9,6 +9,23 @@ def init_db(db: Session = None) -> None:
     """Initializes tables and seeds baseline development / evaluation users."""
     Base.metadata.create_all(bind=engine)
 
+    # Lightweight SQLite auto-migration for newly added columns
+    try:
+        with engine.connect() as conn:
+            existing_cols = [row[1] for row in conn.execute(text("PRAGMA table_info(screenings)")).fetchall()]
+            if existing_cols:
+                if "stage_details" not in existing_cols:
+                    conn.execute(text("ALTER TABLE screenings ADD COLUMN stage_details JSON DEFAULT '{}'"))
+                if "current_stage" not in existing_cols:
+                    conn.execute(text("ALTER TABLE screenings ADD COLUMN current_stage VARCHAR(64)"))
+                if "rescan_instructions" not in existing_cols:
+                    conn.execute(text("ALTER TABLE screenings ADD COLUMN rescan_instructions TEXT"))
+                if "is_aborted" not in existing_cols:
+                    conn.execute(text("ALTER TABLE screenings ADD COLUMN is_aborted BOOLEAN DEFAULT 0"))
+                conn.commit()
+    except Exception:
+        pass
+
     close_session = False
     if db is None:
         db = SessionLocal()

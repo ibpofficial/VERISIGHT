@@ -2,8 +2,10 @@ import os
 import hashlib
 import uuid
 import datetime
+import cv2
+import numpy as np
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, BackgroundTasks, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
@@ -16,13 +18,14 @@ from backend.app.models import (
 )
 from backend.app.schemas import (
     ScreeningResponse, QualityResponse, ExtractedFieldResponse, 
-    FieldCorrectionRequest, MRZResponse
+    FieldCorrectionRequest, MRZResponse, ScreeningStatusResponse
 )
 from backend.app.api.deps import get_current_user, require_roles
 from backend.app.engines.quality import assess_image_quality
 from backend.app.engines.preprocessing import preprocess_document_image
 from backend.app.engines.ocr.registry import ocr_registry
 from backend.app.engines.mrz.parser import parse_mrz, parse_mrz_td3, cross_check_mrz_with_viz
+from backend.app.services.pipeline import execute_screening_pipeline, initialize_stage_details, calculate_overall_progress
 
 router = APIRouter(prefix="/screenings", tags=["Document Screening"])
 
@@ -46,14 +49,20 @@ def validate_image_bytes(contents: bytes) -> str:
 
 @router.post("", response_model=ScreeningResponse)
 async def create_screening(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     document_type: str = Form("PASSPORT_TD3"),
     issuing_country_code: Optional[str] = Form("IND"),
     is_synthetic: bool = Form(False),
     scenario_tag: Optional[str] = Form(None),
+    sync: bool = Form(True),
     current_user: User = Depends(require_roles([UserRole.ADMINISTRATOR, UserRole.SCREENING_OFFICER, UserRole.SENIOR_REVIEWER])),
     db: Session = Depends(get_db)
 ):
+    """
+    Ingests document: validates magic bytes, computes SHA-256 evidence hash,
+    stores raw document, creates audit record, and enqueues async pipeline.
+    """
     contents = await file.read()
     if len(contents) > settings.MAX_UPLOAD_SIZE_BYTES:
         raise HTTPException(
@@ -62,6 +71,15 @@ async def create_screening(
         )
 
     mime_type = validate_image_bytes(contents)
+
+    # Decode probe to catch truncated / corrupted byte payloads
+    arr = np.frombuffer(contents, dtype=np.uint8)
+    probe_img = cv2.imdecode(arr, cv2.IMREAD_UNCHANGED)
+    if probe_img is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Corrupted or unreadable image payload. File headers exist but pixel data cannot be decoded."
+        )
 
     # 1. Immediate SHA-256 evidence hashing at ingestion
     file_sha256 = hashlib.sha256(contents).hexdigest()
@@ -87,13 +105,16 @@ async def create_screening(
     with open(raw_storage_path, "wb") as f:
         f.write(contents)
 
-    # 4. Create Screening & Document ORM records
+    # 4. Create Screening & Document records in PENDING stage
+    initial_stages = initialize_stage_details()
     screening = Screening(
         reference_no=reference_no,
         officer_id=current_user.id,
         document_type=document_type,
         issuing_country_code=issuing_country_code,
-        status=ScreeningStatus.PREPROCESSING,
+        status=ScreeningStatus.PENDING,
+        stage_details=initial_stages,
+        current_stage="PENDING",
         is_synthetic=is_synthetic,
         scenario_tag=scenario_tag
     )
@@ -111,138 +132,7 @@ async def create_screening(
     )
     db.add(doc_record)
 
-    # 5. Image Quality Assessment
-    try:
-        quality_result = assess_image_quality(raw_storage_path)
-    except Exception as e:
-        if os.path.exists(raw_storage_path):
-            os.remove(raw_storage_path)
-        raise HTTPException(status_code=400, detail=f"Corrupted or unreadable image file payload: {str(e)}")
-
-    quality_record = QualityAssessment(
-        screening_id=screening.id,
-        overall_score=quality_result["overall_score"],
-        is_acceptable=quality_result["is_acceptable"],
-        blur_score=quality_result["blur_score"],
-        brightness_score=quality_result["brightness_score"],
-        glare_score=quality_result["glare_score"],
-        resolution_dpi=quality_result["resolution_dpi"],
-        orientation_detected=quality_result["orientation_detected"],
-        is_cropped=quality_result["is_cropped"],
-        readability_score=quality_result["readability_score"],
-        issues_detected=quality_result["issues_detected"],
-        rescan_recommended=quality_result["rescan_recommended"]
-    )
-    db.add(quality_record)
-
-    # 6. Preprocessing (deskew, CLAHE, denoise)
-    try:
-        processed_path, prep_meta = preprocess_document_image(
-            input_path=raw_storage_path,
-            output_dir=settings.PROCESSED_DIR,
-            orientation_hint=quality_result["orientation_detected"]
-        )
-    except Exception as e:
-        processed_path = raw_storage_path
-    doc_record.processed_path = processed_path
-    screening.status = ScreeningStatus.ANALYZING
-
-    # 7. OCR Extraction via Unified Registry (PaddleOCR primary / Tesseract fallback)
-    ocr_result = ocr_registry.extract_with_fallback(processed_path)
-
-    viz_fields_dict = {}
-    for f_dto in ocr_result.fields:
-        viz_fields_dict[f_dto.field_name] = f_dto.value
-        val_status = ValidationStatus.MISSING
-        if f_dto.validation_status in ValidationStatus.__members__:
-            val_status = ValidationStatus[f_dto.validation_status]
-        elif f_dto.value:
-            val_status = ValidationStatus.VALID
-
-        field_model = ExtractedField(
-            screening_id=screening.id,
-            field_name=f_dto.field_name,
-            original_value=f_dto.value,
-            current_value=f_dto.value,
-            confidence=f_dto.confidence,
-            bounding_box=f_dto.bounding_box,
-            validation_status=val_status
-        )
-        db.add(field_model)
-
-    # 8. Real MRZ Verification (Supports TD1, TD2, TD3 with Position-Aware OCR Normalization)
-    mrz_lines = ocr_result.raw_mrz_lines
-    if len(mrz_lines) >= 2:
-        try:
-            mrz_data = parse_mrz(mrz_lines)
-        except Exception:
-            mrz_data = parse_mrz_td3(mrz_lines[0], mrz_lines[1])
-
-        viz_conf_dict = {f.field_name: f.confidence for f in ocr_result.fields}
-        cross_check = cross_check_mrz_with_viz(mrz_data, viz_fields_dict, viz_conf_dict)
-
-        mrz_record = MRZRecord(
-            screening_id=screening.id,
-            raw_mrz_text="\n".join(mrz_lines),
-            format=mrz_data["format"],
-            doc_type_code=mrz_data["doc_type_code"],
-            issuing_country=mrz_data["issuing_country"],
-            surname=mrz_data["surname"],
-            given_names=mrz_data["given_names"],
-            document_number=mrz_data["document_number"],
-            nationality=mrz_data["nationality"],
-            dob=mrz_data["dob"],
-            sex=mrz_data["sex"],
-            expiry_date=mrz_data["expiry_date"],
-            optional_data=mrz_data["optional_data"],
-            doc_number_check=mrz_data["doc_number_check"],
-            dob_check=mrz_data["dob_check"],
-            expiry_check=mrz_data["expiry_check"],
-            composite_check=mrz_data["composite_check"],
-            cross_check_matches=cross_check["matches"]
-        )
-        db.add(mrz_record)
-
-        # Baseline preliminary risk level
-        if not mrz_data["composite_check"] or not cross_check["is_consistent"]:
-            screening.risk_level = RiskLevel.HIGH_RISK
-            screening.risk_score = 85.0
-        elif quality_result["rescan_recommended"]:
-            screening.risk_level = RiskLevel.REVIEW
-            screening.risk_score = 45.0
-        else:
-            screening.risk_level = RiskLevel.CLEAR
-            screening.risk_score = 12.0
-    else:
-        # No MRZ detected or engine unavailable: store explicit unread MRZ record
-        mrz_record = MRZRecord(
-            screening_id=screening.id,
-            raw_mrz_text="",
-            format="NONE",
-            doc_type_code="",
-            issuing_country=screening.issuing_country_code or "",
-            surname="",
-            given_names="",
-            document_number="",
-            nationality="",
-            dob="",
-            sex="",
-            expiry_date="",
-            optional_data="",
-            doc_number_check=False,
-            dob_check=False,
-            expiry_check=False,
-            composite_check=False,
-            cross_check_matches={}
-        )
-        db.add(mrz_record)
-        screening.risk_level = RiskLevel.REVIEW
-        screening.risk_score = 50.0
-
-    screening.status = ScreeningStatus.COMPLETED
-    screening.processing_time_ms = ocr_result.execution_time_ms
-
-    # 9. Cryptographic Audit Chain Record
+    # 5. Cryptographic Audit Chain Record for Document Ingestion
     last_audit = db.query(AuditLog).order_by(AuditLog.id.desc()).first()
     prev_hash = last_audit.current_hash if last_audit else "0" * 64
     event_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -271,10 +161,117 @@ async def create_screening(
         current_hash=block_hash
     )
     db.add(audit_entry)
-
     db.commit()
     db.refresh(screening)
+
+    # 6. Trigger pipeline execution: synchronously or asynchronously via worker
+    if sync:
+        execute_screening_pipeline(screening.id)
+        db.refresh(screening)
+    else:
+        background_tasks.add_task(execute_screening_pipeline, screening.id)
+
     return screening
+
+
+@router.get("/{id}/status", response_model=ScreeningStatusResponse)
+def get_screening_status(
+    id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Returns real-time execution progress, active stage, and stage details.
+    """
+    screening = db.query(Screening).filter(Screening.id == id).first()
+    if not screening:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Screening record not found")
+
+    stages_dict = screening.stage_details or initialize_stage_details()
+    progress = calculate_overall_progress(stages_dict)
+
+    err = None
+    if screening.current_stage and screening.current_stage in stages_dict:
+        err = stages_dict[screening.current_stage].get("error")
+
+    return ScreeningStatusResponse(
+        id=screening.id,
+        reference_no=screening.reference_no,
+        status=screening.status,
+        current_stage=screening.current_stage,
+        overall_progress=progress,
+        stages=stages_dict,
+        rescan_instructions=screening.rescan_instructions,
+        error_message=err,
+        is_aborted=screening.is_aborted
+    )
+
+
+@router.post("/{id}/retry", response_model=ScreeningStatusResponse)
+def retry_screening(
+    id: str,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(require_roles([UserRole.ADMINISTRATOR, UserRole.SCREENING_OFFICER, UserRole.SENIOR_REVIEWER])),
+    db: Session = Depends(get_db)
+):
+    """
+    Resets failed or rejected stages and re-triggers pipeline execution.
+    """
+    screening = db.query(Screening).filter(Screening.id == id).first()
+    if not screening:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Screening record not found")
+
+    screening.status = ScreeningStatus.PENDING
+    screening.is_aborted = False
+    screening.rescan_instructions = None
+    screening.stage_details = initialize_stage_details()
+    screening.current_stage = "PENDING"
+    db.commit()
+
+    background_tasks.add_task(execute_screening_pipeline, screening.id)
+
+    return ScreeningStatusResponse(
+        id=screening.id,
+        reference_no=screening.reference_no,
+        status=screening.status,
+        current_stage="PENDING",
+        overall_progress=0,
+        stages=screening.stage_details,
+        rescan_instructions=None,
+        error_message=None,
+        is_aborted=False
+    )
+
+
+@router.post("/{id}/cancel", response_model=ScreeningStatusResponse)
+def cancel_screening(
+    id: str,
+    current_user: User = Depends(require_roles([UserRole.ADMINISTRATOR, UserRole.SCREENING_OFFICER, UserRole.SENIOR_REVIEWER])),
+    db: Session = Depends(get_db)
+):
+    """
+    Signals pipeline worker to abort execution of the screening.
+    """
+    screening = db.query(Screening).filter(Screening.id == id).first()
+    if not screening:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Screening record not found")
+
+    screening.is_aborted = True
+    screening.status = ScreeningStatus.ABORTED
+    db.commit()
+
+    stages_dict = screening.stage_details or initialize_stage_details()
+    return ScreeningStatusResponse(
+        id=screening.id,
+        reference_no=screening.reference_no,
+        status=screening.status,
+        current_stage=screening.current_stage,
+        overall_progress=calculate_overall_progress(stages_dict),
+        stages=stages_dict,
+        rescan_instructions=screening.rescan_instructions,
+        error_message="Screening aborted by officer.",
+        is_aborted=True
+    )
 
 
 @router.get("", response_model=List[ScreeningResponse])

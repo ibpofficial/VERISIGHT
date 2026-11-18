@@ -9,6 +9,7 @@ import { GlassButton } from '../components/glass/GlassButton';
 import { CaseStepper } from '../components/common/CaseStepper';
 import { WhatNextPanel } from '../components/common/WhatNextPanel';
 import { screeningsApi } from '../services/api';
+import type { ScreeningStatusResponse } from '../types';
 
 const DOCUMENT_TYPES = [
   { id: 'PASSPORT_TD3', label: 'Passport (ICAO TD3)', desc: 'Standard 2-line MRZ machine readable travel document' },
@@ -148,30 +149,8 @@ export const NewScreeningPage: React.FC = () => {
 
     setIsSubmitting(true);
     setErrorMessage(null);
-    setUploadProgress(15);
+    setUploadProgress(10);
     setCurrentStep('Hashing evidence & validating image headers...');
-
-    // Dynamic progress ticker that smoothly updates while server is computing
-    const stages = [
-      { progress: 25, text: 'Computing optical quality assessment & DPI metrics...' },
-      { progress: 45, text: 'Rectifying orientation, deskewing & bilateral denoising...' },
-      { progress: 65, text: 'Running neural OCR & detecting character coordinates...' },
-      { progress: 80, text: 'Verifying ICAO 9303 modulo-10 check digits...' },
-      { progress: 90, text: 'Sealing cryptographic Merkle audit block...' },
-      { progress: 95, text: 'Finalizing screening dossier on cloud server...' },
-    ];
-
-    let stageIdx = 0;
-    const progressInterval = setInterval(() => {
-      if (stageIdx < stages.length) {
-        setUploadProgress(stages[stageIdx].progress);
-        setCurrentStep(stages[stageIdx].text);
-        stageIdx++;
-      } else {
-        // Slowly increment up to 98% while waiting for cloud server
-        setUploadProgress((prev) => (prev < 98 ? prev + 1 : prev));
-      }
-    }, 900);
 
     try {
       const formData = new FormData();
@@ -179,20 +158,63 @@ export const NewScreeningPage: React.FC = () => {
       formData.append('document_type', docType);
       formData.append('issuing_country_code', countryCode);
       formData.append('is_synthetic', String(isSynthetic || Boolean(scenarioTag)));
+      formData.append('sync', 'false');
       if (scenarioTag) {
         formData.append('scenario_tag', scenarioTag);
       }
 
       const result = await screeningsApi.create(formData);
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-      setCurrentStep('Screening complete! Redirecting to Quality Report...');
+      const screeningId = result.id;
+      setUploadProgress(15);
+      setCurrentStep('Ingested & hashed evidence. Initializing screening pipeline...');
 
-      setTimeout(() => {
-        navigate(`/screenings/${result.id}/quality`);
-      }, 500);
+      const stageLabels: Record<string, string> = {
+        QUALITY_ASSESSMENT: 'Evaluating optical sharpness, glare & resolution standards...',
+        PREPROCESSING: 'Rectifying orientation, deskewing & bilateral denoising...',
+        OCR_EXTRACTION: 'Running neural OCR & detecting character coordinates...',
+        MRZ_PARSING: 'Parsing ICAO 9303 machine-readable travel zones...',
+        VALIDATION_CROSSCHECK: 'Verifying check digits & cross-referencing fields...',
+        FORENSICS_ANALYSIS: 'Executing 5-pillar digital forensics & ELA inspection...',
+        RISK_SCORING: 'Computing risk rules & cryptographic Merkle block seal...',
+        COMPLETED: 'Screening complete! Redirecting to Quality Report...',
+      };
+
+      // Poll real stage progress
+      const pollInterval = setInterval(async () => {
+        try {
+          const statusData: ScreeningStatusResponse = await screeningsApi.getStatus(screeningId);
+          
+          if (statusData.overall_progress > 0) {
+            setUploadProgress(Math.max(15, statusData.overall_progress));
+          }
+          if (statusData.current_stage && stageLabels[statusData.current_stage]) {
+            setCurrentStep(stageLabels[statusData.current_stage]);
+          }
+
+          if (statusData.status === 'COMPLETED') {
+            clearInterval(pollInterval);
+            setUploadProgress(100);
+            setCurrentStep('Screening complete! Redirecting to Quality Report...');
+            setTimeout(() => {
+              navigate(`/screenings/${screeningId}/quality`);
+            }, 600);
+          } else if (statusData.status === 'REJECTED_POOR_QUALITY') {
+            clearInterval(pollInterval);
+            setIsSubmitting(false);
+            setUploadProgress(0);
+            setErrorMessage(statusData.rescan_instructions || 'Document image does not meet optical quality criteria. Please rescan.');
+          } else if (statusData.status === 'FAILED' || statusData.status === 'ABORTED') {
+            clearInterval(pollInterval);
+            setIsSubmitting(false);
+            setUploadProgress(0);
+            setErrorMessage(statusData.error_message || 'Screening pipeline encountered an error. Please retry.');
+          }
+        } catch (pollErr: any) {
+          // Continue polling on transient network hiccup
+        }
+      }, 700);
+
     } catch (err: any) {
-      clearInterval(progressInterval);
       setIsSubmitting(false);
       setUploadProgress(0);
       const detail = err.response?.data?.detail || err.message || 'An error occurred during document intake.';
