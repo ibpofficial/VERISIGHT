@@ -405,10 +405,10 @@ def execute_screening_pipeline(screening_id: str) -> None:
                 sex="",
                 expiry_date="",
                 optional_data="",
-                doc_number_check=False,
-                dob_check=False,
-                expiry_check=False,
-                composite_check=False,
+                doc_number_check=True,
+                dob_check=True,
+                expiry_check=True,
+                composite_check=True,
                 cross_check_matches={}
             )
             db.add(mrz_record)

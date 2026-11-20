@@ -1,3 +1,4 @@
+import os
 import cv2
 import re
 import time
@@ -11,6 +12,16 @@ from backend.app.engines.ocr.field_validator import compute_field_validation_sta
 class TesseractOCREngine(OCREngine):
     def __init__(self):
         self.engine_name = "Tesseract-OCR"
+        # Auto-configure tesseract binary path on Windows if not already in system PATH
+        potential_paths = [
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+            os.path.expanduser(r"~\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"),
+        ]
+        for p in potential_paths:
+            if os.path.exists(p):
+                pytesseract.pytesseract.tesseract_cmd = p
+                break
 
     def extract(self, image_path: str) -> OCRResultDTO:
         start_time = time.time()

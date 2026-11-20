@@ -217,7 +217,18 @@ def compute_face_similarity(doc_face_bgr: np.ndarray, live_face_bgr: np.ndarray)
     v1 = _extract_biometric_embedding(doc_face_bgr)
     v2 = _extract_biometric_embedding(live_face_bgr)
 
-    dot_product = float(np.dot(v1, v2))
+    # Center vectors (zero-mean) to prevent baseline histogram bias
+    v1_zm = v1 - np.mean(v1)
+    norm1 = np.linalg.norm(v1_zm)
+    if norm1 > 1e-6:
+        v1_zm = v1_zm / norm1
+
+    v2_zm = v2 - np.mean(v2)
+    norm2 = np.linalg.norm(v2_zm)
+    if norm2 > 1e-6:
+        v2_zm = v2_zm / norm2
+
+    dot_product = float(np.dot(v1_zm, v2_zm))
     cosine_sim = max(-1.0, min(1.0, dot_product))
 
     # Calibrated ArcFace cosine threshold standards (0.40 calibrated 1:1 operational threshold)

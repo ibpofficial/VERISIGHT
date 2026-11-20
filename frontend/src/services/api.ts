@@ -136,7 +136,8 @@ export const forensicsApi = {
     return res.data;
   },
   getHeatmapUrl: (screeningId: string) => {
-    return `/api/v1/forensics/${screeningId}/heatmap`;
+    const token = localStorage.getItem('verisight_access_token');
+    return `/api/v1/forensics/${screeningId}/heatmap?token=${token || ''}`;
   },
 };
 

@@ -70,8 +70,9 @@ export const MRZStudioPage: React.FC = () => {
     );
   }
 
-  const allChecksPass = mrz.doc_number_check && mrz.dob_check && mrz.expiry_check && mrz.composite_check;
-  const mrzLines = mrz.raw_mrz_text.split('\n').filter(Boolean);
+  const isNonMRZ = mrz.format === 'NONE' || !mrz.raw_mrz_text || mrz.raw_mrz_text.trim() === '';
+  const allChecksPass = isNonMRZ || (mrz.doc_number_check && mrz.dob_check && mrz.expiry_check && mrz.composite_check);
+  const mrzLines = mrz.raw_mrz_text ? mrz.raw_mrz_text.split('\n').filter(Boolean) : [];
 
   const crossChecks = [
     { label: 'Document Number', mrzVal: mrz.document_number, pass: mrz.cross_check_matches?.document_number ?? true },
@@ -89,12 +90,16 @@ export const MRZStudioPage: React.FC = () => {
       {/* Recommended Next Action */}
       <WhatNextPanel
         recommendation={
-          allChecksPass
+          isNonMRZ
+            ? "Non-MRZ document format (Aadhaar / National ID). Proceed to Forensic Laboratory."
+            : allChecksPass
             ? "Passport security code math is valid. Proceed to Forensic Laboratory."
             : "Security code check digit failure detected! Inspect Error Level Analysis in Forensics Lab."
         }
         reason={
-          allChecksPass
+          isNonMRZ
+            ? "This credential does not use an ICAO 9303 MRZ. Verification focuses on 5-pillar digital forensics."
+            : allChecksPass
             ? "All ICAO 9303 modulo-10 weights match the printed dates and credential numbers."
             : "Mathematical mismatch indicates potential date alteration, expired forgery, or altered document number."
         }
@@ -116,13 +121,15 @@ export const MRZStudioPage: React.FC = () => {
             <span className="text-blue-600 font-semibold">ICAO 9303 MRZ Studio</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            MRZ Verification & 7-3-1 Cryptographic Integrity
+            MRZ Verification & Cryptographic Integrity
             <span className={`text-xs px-2.5 py-0.5 rounded-full border font-semibold ${
-              allChecksPass
+              isNonMRZ
+                ? 'bg-blue-50 text-blue-700 border-blue-200'
+                : allChecksPass
                 ? 'bg-green-50 text-green-700 border-green-200'
                 : 'bg-red-50 text-red-700 border-red-200'
             }`}>
-              {allChecksPass ? 'All Check Digits Valid' : 'Check Digit Anomaly Detected'}
+              {isNonMRZ ? 'Non-MRZ Credential' : allChecksPass ? 'All Check Digits Valid' : 'Check Digit Anomaly Detected'}
             </span>
           </h1>
         </div>
@@ -146,8 +153,21 @@ export const MRZStudioPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Non-MRZ Informational Notice */}
+      {isNonMRZ && (
+        <div className="p-5 rounded-xl bg-blue-50/70 border border-blue-200 flex items-start gap-4 text-blue-950">
+          <CheckCircle2 className="w-6 h-6 flex-shrink-0 text-blue-600 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-semibold text-sm">Non-MRZ Credential Detected (e.g. Aadhaar / PAN / National ID)</div>
+            <p className="text-xs text-blue-800 leading-relaxed">
+              This credential is not an ICAO 9303 travel passport and is not expected to contain a Machine Readable Zone. Cryptographic MRZ checksum calculations are safely bypassed so genuine national identity credentials are never falsely marked as counterfeit.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Anomaly Alert if any check digit failed */}
-      {!allChecksPass && (
+      {!isNonMRZ && !allChecksPass && (
         <div className="p-4 rounded-xl bg-red-50 border border-red-300 flex items-start gap-4 text-red-900">
           <ShieldAlert className="w-6 h-6 flex-shrink-0 text-red-600 mt-0.5" />
           <div className="space-y-1">
@@ -172,13 +192,21 @@ export const MRZStudioPage: React.FC = () => {
         </div>
 
         {/* Monospace Lines Display */}
-        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-sm sm:text-base tracking-widest text-green-400 overflow-x-auto select-all shadow-inner">
-          {mrzLines.map((line, idx) => (
-            <div key={idx} className="whitespace-pre">
-              {line}
-            </div>
-          ))}
-        </div>
+        {isNonMRZ ? (
+          <div className="bg-slate-900/60 p-6 rounded-xl border border-dashed border-slate-700 font-sans text-xs text-slate-400 text-center space-y-1">
+            <div className="font-semibold text-slate-300 text-sm">No Machine Readable Zone (MRZ) Present</div>
+            <div>Aadhaar cards, PAN cards, and voter identity credentials do not feature ICAO Doc 9303 MRZ lines.</div>
+            <div className="text-slate-500">Document data is verified directly from visual zone text and biometric forensics.</div>
+          </div>
+        ) : (
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-sm sm:text-base tracking-widest text-green-400 overflow-x-auto select-all shadow-inner">
+            {mrzLines.map((line, idx) => (
+              <div key={idx} className="whitespace-pre">
+                {line}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Legend */}
         <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-600">

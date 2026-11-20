@@ -13,6 +13,8 @@ import type { ScreeningStatusResponse } from '../types';
 
 const DOCUMENT_TYPES = [
   { id: 'PASSPORT_TD3', label: 'Passport (ICAO TD3)', desc: 'Standard 2-line MRZ machine readable travel document' },
+  { id: 'AADHAAR_CARD', label: 'Aadhaar Card (UIDAI / Non-MRZ)', desc: 'Indian National ID with 12-digit UID, photo, and address' },
+  { id: 'PAN_CARD', label: 'PAN Card (Income Tax Dept / Non-MRZ)', desc: 'Indian Permanent Account Number tax identification card' },
   { id: 'ID_TD1', label: 'National ID Card (ICAO TD1)', desc: '3-line format identification card or driver license' },
   { id: 'VISA_TD2', label: 'Entry Visa Sticker (ICAO TD2)', desc: 'Diplomatic, employment or tourist visa sticker' },
 ];

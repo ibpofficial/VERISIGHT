@@ -12,7 +12,7 @@ from backend.app.engines.face.verifier import (
 
 
 def create_sample_face_bgr(w=160, h=180):
-    img = np.full((h, w, 3), (180, 160, 140), dtype=np.uint8)
+    img = np.full((h, w, 3), (130, 150, 200), dtype=np.uint8)
     # Eyes
     cv2.circle(img, (w // 3, h // 3), 10, (50, 40, 30), -1)
     cv2.circle(img, (2 * w // 3, h // 3), 10, (50, 40, 30), -1)

@@ -21,8 +21,11 @@ def evaluate_screening_risk(
     if quality_record:
         is_poor_quality = getattr(quality_record, "rescan_recommended", False)
 
-    # 1. Check Cryptographic MRZ Check Digits
-    if mrz_record:
+    # 1. Check Cryptographic MRZ Check Digits (Only for credentials with an ICAO 9303 MRZ)
+    format_val = getattr(mrz_record, "format", "TD3")
+    has_real_mrz = bool(mrz_record and format_val != "NONE")
+
+    if has_real_mrz:
         doc_chk = getattr(mrz_record, "doc_number_check", True)
         dob_chk = getattr(mrz_record, "dob_check", True)
         exp_chk = getattr(mrz_record, "expiry_check", True)

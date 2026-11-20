@@ -120,15 +120,19 @@ def get_ela_heatmap(
     if not screening:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Screening record not found")
 
-    heatmap_path = os.path.join(settings.PROCESSED_DIR, f"{screening.reference_no}_ela.jpg")
-    
+    heatmap_path = os.path.join(settings.PROCESSED_DIR, "heatmaps", f"{screening.reference_no}_ela.jpg")
     if not os.path.exists(heatmap_path):
-        # Generate on demand if missing
-        doc = db.query(Document).filter(Document.screening_id == screening_id).first()
-        if not doc:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document file not found")
-        from backend.app.engines.forensics.ela import run_error_level_analysis
-        run_error_level_analysis(doc.processed_path or doc.storage_path, heatmap_path)
+        root_path = os.path.join(settings.PROCESSED_DIR, f"{screening.reference_no}_ela.jpg")
+        if os.path.exists(root_path):
+            heatmap_path = root_path
+        else:
+            # Generate on demand if missing
+            doc = db.query(Document).filter(Document.screening_id == screening_id).first()
+            if not doc:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document file not found")
+            os.makedirs(os.path.dirname(heatmap_path), exist_ok=True)
+            from backend.app.engines.forensics.ela import run_error_level_analysis
+            run_error_level_analysis(doc.processed_path or doc.storage_path, heatmap_path)
 
     if not os.path.exists(heatmap_path):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Heatmap could not be generated")
