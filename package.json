@@ -5,6 +5,10 @@
     "frontend"
   ],
   "scripts": {
-    "build": "npm --prefix frontend run build && node -e \"const fs=require('fs'); fs.cpSync('frontend/dist', 'dist', {recursive: true});\""
+    "build": "cd frontend && npm run build && node -e \"const fs=require('fs'); fs.cpSync('dist', '../dist', {recursive: true});\"",
+    "vercel-build": "cd frontend && npm run build && node -e \"const fs=require('fs'); fs.cpSync('dist', '../dist', {recursive: true});\""
+  },
+  "dependencies": {
+    "vite": "^5.4.11"
   }
 }
