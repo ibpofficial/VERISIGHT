@@ -161,6 +161,11 @@ data/processed/
 data/reports/
 backend/data/
 
+# Scratch & Temporary Testing Scripts
+scratch*
+demo_passport*
+test_output*
+
 # IDE & OS
 .vscode/
 .idea/
